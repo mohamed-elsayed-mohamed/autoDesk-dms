@@ -1,19 +1,25 @@
 <!--
   === Sync Impact Report ===
-  Version change: 0.0.0 (template) → 1.0.0
-  Modified principles: N/A (initial creation)
-  Added sections:
-    - 11 Core Principles (I through XI)
-    - Additional Constraints
-    - Development Workflow
-    - Governance
+  Version change: 1.0.0 → 1.1.0
+  Modified principles:
+    - XI. Renamed "User-Friendly UI/UX" → "Modern, User-Friendly UI/UX"
+    - XI. Expanded with explicit modern design requirements:
+        visual design tokens, 8px grid, color palette rules, typography rules,
+        icon set consistency, rounded corners/shadows, badge/chip status display,
+        skeleton loading screens, empty state with illustration + CTA,
+        WCAG AA contrast, drag-and-drop styling, button state rules
+  Added sections: None
   Removed sections: None
   Templates requiring updates:
-    - .specify/templates/plan-template.md ✅ compatible (Constitution Check section aligns)
-    - .specify/templates/spec-template.md ✅ compatible (user stories, requirements, success criteria align)
-    - .specify/templates/tasks-template.md ✅ compatible (phase structure, test-first, parallel markers align)
-    - .specify/templates/checklist-template.md ✅ compatible (generic structure, no conflicts)
-  Follow-up TODOs: None
+    - .specify/templates/plan-template.md ✅ compatible
+    - .specify/templates/spec-template.md ✅ compatible
+    - .specify/templates/tasks-template.md ⚠️ UI Polish phase tasks may need
+        additional items for design tokens, badge styles, and skeleton screens
+    - .specify/templates/checklist-template.md ✅ compatible
+  Follow-up TODOs:
+    - Review specs/001-vehicle-inventory/tasks.md Phase 6 (Polish) for alignment
+      with new XI requirements (design tokens, badge statuses, skeleton screens,
+      empty state illustrations)
 -->
 
 # AutoDesk DMS Constitution
@@ -168,32 +174,96 @@ The backend MUST follow Clean Architecture layering.
   data fetching and state, and utility functions handle pure
   logic.
 
-### XI. User-Friendly UI/UX
+### XI. Modern, User-Friendly UI/UX
 
 The interface MUST be designed for dealership staff who work
-under time pressure with customers present.
+under time pressure with customers present. It MUST look and
+feel like a modern, professional SaaS product -- not a legacy
+dealership tool.
+
+#### Performance & Navigation
 
 - Every screen MUST load in under 2 seconds.
 - Navigation MUST require no more than 3 clicks to reach any
   primary function.
-- Forms MUST use inline validation with clear error messages --
-  never submit and reload to show errors.
+- Page transitions and data updates MUST use optimistic UI or
+  smooth loading states -- no full-page reloads for partial
+  updates.
+
+#### Visual Design
+
 - The design MUST use a consistent component library (Material
-  UI or Ant Design) with a unified color palette, typography,
-  and spacing system.
-- Data tables MUST support sorting, filtering, column resizing,
-  and keyboard navigation.
-- Dashboard widgets MUST show real-time KPIs with at-a-glance
-  readability (large numbers, color-coded status indicators,
-  sparkline trends).
-- Mobile-responsive layouts MUST be provided for service
-  advisors and sales consultants who use tablets on the lot and
-  in the shop.
-- Empty states, loading skeletons, and error boundaries MUST be
-  implemented on every page -- no blank screens or raw error
-  dumps.
+  UI or Ant Design) with a carefully chosen, modern color
+  palette: a neutral base (white or light gray backgrounds),
+  a single strong brand accent color, and semantic status
+  colors (green = active/success, amber = warning/pending,
+  red = error/deleted, blue = informational).
+- Typography MUST use a clean sans-serif font with a clear
+  hierarchy: large, bold headings; medium body text; small
+  muted labels. No more than 2 font families across the
+  entire application.
+- Spacing MUST follow an 8px grid system (4 / 8 / 16 / 24 /
+  32 / 48px). No arbitrary pixel values.
+- Icons MUST come from a single icon set (e.g. Material Icons
+  or Lucide) used consistently. No mixing icon libraries.
+- Cards, panels, and modals MUST use subtle box shadows and
+  rounded corners (border-radius 8–12px) for depth without
+  heaviness.
+- The color palette and component styles MUST be defined as
+  design tokens (CSS variables or theme config) so they can
+  be updated in one place.
+
+#### Forms & Interactions
+
+- Forms MUST use inline validation with clear error messages
+  -- never submit and reload to show errors.
+- Primary action buttons MUST be visually prominent; secondary
+  and destructive actions MUST be clearly differentiated by
+  style (outlined or ghost for secondary; red or with warning
+  icon for destructive).
 - All destructive actions (delete, unwind deal, void RO) MUST
-  require explicit confirmation dialogs.
+  require explicit confirmation dialogs with a clear
+  description of what will happen.
+- Hover, focus, active, and disabled states MUST be defined
+  for every interactive element -- no unstyled defaults.
+- Drag-and-drop interactions (e.g. photo reorder) MUST
+  provide visible drag handles and drop-zone highlights.
+
+#### Data Display
+
+- Data tables MUST support sorting, filtering, column
+  resizing, and keyboard navigation.
+- Status values MUST be displayed as color-coded badges or
+  chips (not plain text) using the semantic color palette.
+- Dashboard widgets MUST show KPIs with at-a-glance
+  readability: large, bold numbers; descriptive labels;
+  color-coded trend indicators where applicable.
+- Primary photos and thumbnails MUST use consistent aspect
+  ratios (e.g. 16:9 or 4:3) with object-fit: cover to
+  avoid distortion.
+
+#### Responsiveness & Accessibility
+
+- Mobile-responsive layouts MUST be provided for service
+  advisors and sales consultants who use tablets on the lot
+  and in the shop. Layouts MUST use CSS Grid or Flexbox;
+  no fixed-width tables that overflow on small screens.
+- Interactive elements MUST meet WCAG AA color contrast
+  ratios (4.5:1 for normal text, 3:1 for large text).
+- All images MUST have descriptive alt text.
+
+#### Empty, Loading & Error States
+
+- Empty states MUST include an illustrative icon or
+  graphic, a descriptive heading, and a clear call to
+  action where applicable (e.g. "No vehicles yet —
+  Add your first vehicle").
+- Loading states MUST use skeleton screens (not raw
+  spinners) that match the shape of the content being
+  loaded.
+- Error boundaries MUST be implemented on every page;
+  errors MUST show a friendly message with a retry
+  action -- never a raw stack trace or blank screen.
 
 ## Additional Constraints
 
@@ -236,4 +306,4 @@ under time pressure with customers present.
   infrastructure that are not required by a current
   specification.
 
-**Version**: 1.0.0 | **Ratified**: 2026-03-08 | **Last Amended**: 2026-03-08
+**Version**: 1.1.0 | **Ratified**: 2026-03-08 | **Last Amended**: 2026-03-08

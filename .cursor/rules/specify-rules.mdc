@@ -1,0 +1,35 @@
+---
+description: Project Development Guidelines
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Demo Development Guidelines
+
+Auto-generated from all feature plans. Last updated: 2026-03-08
+
+## Active Technologies
+
+- TypeScript 5.x (Node.js 20 LTS backend, React 18 frontend) + NestJS, Prisma, React, Material UI or Ant Design; AWS SDK (S3); JWT (e.g. @nestjs/jwt) (001-vehicle-inventory)
+
+## Project Structure
+
+```text
+src/
+tests/
+```
+
+## Commands
+
+npm test && npm run lint
+
+## Code Style
+
+TypeScript 5.x (Node.js 20 LTS backend, React 18 frontend): Follow standard conventions
+
+## Recent Changes
+
+- 001-vehicle-inventory: Added TypeScript 5.x (Node.js 20 LTS backend, React 18 frontend) + NestJS, Prisma, React, Material UI or Ant Design; AWS SDK (S3); JWT (e.g. @nestjs/jwt)
+
+<!-- MANUAL ADDITIONS START -->
+<!-- MANUAL ADDITIONS END -->

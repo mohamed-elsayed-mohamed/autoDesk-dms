@@ -1,0 +1,107 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  InventoryManager
+  SalesConsultant
+  GeneralManager
+}
+
+enum Condition {
+  New
+  Used
+  CPO
+}
+
+enum VehicleStatus {
+  InTransit
+  InRecon
+  FrontlineReady
+  Sold
+  Wholesaled
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  firstName    String
+  lastName     String
+  role         UserRole
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  vehicleHistory VehicleHistory[]
+
+  @@index([email])
+}
+
+model Vehicle {
+  id            String        @id @default(uuid())
+  vin           String        @unique @db.VarChar(17)
+  stockNumber   Int           @unique
+  year          Int
+  make          String
+  model         String
+  trim          String?
+  bodyStyle     String?
+  exteriorColor String?
+  interiorColor String?
+  mileage       Int           @default(0)
+  condition     Condition
+  status        VehicleStatus
+  msrp          Decimal?      @db.Decimal(12, 2)
+  invoicePrice  Decimal?      @db.Decimal(12, 2)
+  internetPrice Decimal?      @db.Decimal(12, 2)
+  salePrice     Decimal?      @db.Decimal(12, 2)
+  lotLocation   String?
+  dateAcquired  DateTime
+  dateSold      DateTime?
+  deletedAt     DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  photos  VehiclePhoto[]
+  history VehicleHistory[]
+
+  @@index([deletedAt, status])
+  @@index([make, model])
+  @@index([year])
+}
+
+model VehiclePhoto {
+  id        String   @id @default(uuid())
+  vehicleId String
+  url       String
+  sortOrder Int      @default(0)
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id])
+
+  @@index([vehicleId])
+}
+
+model VehicleHistory {
+  id         String   @id @default(uuid())
+  vehicleId  String
+  changeType String
+  fieldName  String?
+  oldValue   String?
+  newValue   String?
+  userId     String
+  createdAt  DateTime @default(now())
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@index([vehicleId])
+  @@index([vehicleId, createdAt])
+}
