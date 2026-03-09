@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bill of Sale — Deal #{{deal_number}}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; font-size: 12pt; color: #111; padding: 48px; max-width: 700px; margin: 0 auto; }
+    h1 { font-size: 22pt; text-align: center; margin-bottom: 6px; }
+    .subtitle { text-align: center; color: #555; font-size: 10pt; margin-bottom: 32px; }
+    .divider { border: none; border-top: 2px solid #333; margin: 24px 0; }
+    .row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .row .label { color: #555; font-size: 10pt; }
+    .row .value { font-weight: 500; }
+    .total-row { font-size: 14pt; font-weight: bold; border-top: 2px solid #333; padding-top: 10px; margin-top: 10px; }
+    .statement { margin: 32px 0; font-size: 11pt; line-height: 1.6; }
+    .signature-block { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 48px; }
+    .sig-line { border-top: 1px solid #555; padding-top: 8px; font-size: 9pt; color: #555; }
+    .footer { text-align: center; font-size: 8pt; color: #aaa; margin-top: 40px; }
+  </style>
+</head>
+<body>
+
+<h1>Bill of Sale</h1>
+<p class="subtitle">{{dealership_name}} &nbsp;|&nbsp; {{date}} &nbsp;|&nbsp; Deal #{{deal_number}}</p>
+
+<hr class="divider" />
+
+<div class="row"><span class="label">Seller</span><span class="value">{{dealership_name}}</span></div>
+<div class="row"><span class="label">Buyer</span><span class="value">{{customer_name}}</span></div>
+<div class="row"><span class="label">Buyer Email</span><span class="value">{{customer_email}}</span></div>
+<div class="row"><span class="label">Buyer Phone</span><span class="value">{{customer_phone}}</span></div>
+
+<hr class="divider" />
+
+<div class="row"><span class="label">Vehicle</span><span class="value">{{vehicle_year_make_model}}</span></div>
+<div class="row"><span class="label">VIN</span><span class="value">{{vehicle_vin}}</span></div>
+<div class="row"><span class="label">Stock Number</span><span class="value">#{{vehicle_stock_number}}</span></div>
+<div class="row"><span class="label">Condition</span><span class="value">{{vehicle_condition}}</span></div>
+
+<hr class="divider" />
+
+<div class="row total-row"><span>Sale Price</span><span>{{sale_price}}</span></div>
+
+<div class="statement">
+  The above-described motor vehicle is sold "as-is" unless a separate written warranty is provided.
+  The seller makes no representations regarding the vehicle's fitness for a particular purpose beyond
+  those expressly stated in writing. Buyer acknowledges receipt of the vehicle described above.
+</div>
+
+<div class="signature-block">
+  <div>
+    <div class="sig-line">Buyer Signature</div>
+    <div style="margin-top: 10px; font-size: 9pt; color: #555">{{customer_name}}</div>
+    <div style="margin-top: 4px; font-size: 9pt; color: #aaa">Date: {{date}}</div>
+  </div>
+  <div>
+    <div class="sig-line">Authorized Dealer Signature</div>
+    <div style="margin-top: 10px; font-size: 9pt; color: #555">{{dealership_name}}</div>
+    <div style="margin-top: 4px; font-size: 9pt; color: #aaa">Date: {{date}}</div>
+  </div>
+</div>
+
+<div class="footer">Deal #{{deal_number}} &nbsp;·&nbsp; Generated {{date}}</div>
+
+</body>
+</html>

@@ -14,6 +14,37 @@ enum UserRole {
   GeneralManager
   SalesManager
   BDCAgent
+  FniManager
+}
+
+// ─── Deal Enums ───────────────────────────────────────────────────────────────
+
+enum DealType {
+  Cash
+  Finance
+  Lease
+}
+
+enum DealStatus {
+  Pending
+  Desking
+  Fni
+  ContractsSigned
+  Delivered
+  Funded
+  Unwound
+}
+
+enum TradeInCondition {
+  Excellent
+  Good
+  Fair
+  Poor
+}
+
+enum DocumentType {
+  BuyersOrder
+  BillOfSale
 }
 
 enum LeadSource {
@@ -104,6 +135,7 @@ model User {
   assignedTasks       Task[]             @relation("TaskAssignee")
   statusChanges       LeadStatusHistory[] @relation("StatusChanger")
   notifications       Notification[]
+  createdDeals        Deal[]             @relation("DealCreatedBy")
 
   @@index([email])
   @@index([role])
@@ -137,6 +169,7 @@ model Vehicle {
   photos       VehiclePhoto[]
   history      VehicleHistory[]
   leadVehicles LeadVehicle[]
+  deals        Deal[]
 
   @@index([deletedAt, status])
   @@index([make, model])
@@ -193,6 +226,7 @@ model Customer {
 
   leads      Lead[]
   activities Activity[]
+  deals      Deal[]
 
   @@index([lastName, firstName])
   @@index([email])
@@ -308,4 +342,116 @@ model Notification {
 model RoundRobinState {
   id                 String  @id @default("lead-assignment")
   lastAssignedUserId String?
+}
+
+// ─── Deal Models ──────────────────────────────────────────────────────────────
+
+model DealershipConfig {
+  id               String   @id @default("dealership")
+  dealNumberOffset Int      @default(1001)
+  updatedAt        DateTime @updatedAt
+
+  @@map("dealership_config")
+}
+
+model Deal {
+  id         String     @id @default(uuid())
+  dealNumber Int        @unique
+  dealType   DealType
+  status     DealStatus @default(Pending)
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+  vehicleId  String
+  vehicle    Vehicle  @relation(fields: [vehicleId], references: [id])
+
+  salePrice      Decimal @default(0) @db.Decimal(12, 2)
+  downPayment    Decimal @default(0) @db.Decimal(12, 2)
+  rebates        Decimal @default(0) @db.Decimal(12, 2)
+  apr            Decimal @default(0) @db.Decimal(6, 4)
+  term           Int     @default(0)
+  taxRate        Decimal @default(0) @db.Decimal(6, 4)
+  totalTax       Decimal @default(0) @db.Decimal(12, 2)
+  amountFinanced Decimal @default(0) @db.Decimal(12, 2)
+  monthlyPayment Decimal @default(0) @db.Decimal(12, 2)
+  frontEndGross  Decimal @default(0) @db.Decimal(12, 2)
+  backEndGross   Decimal? @db.Decimal(12, 2)
+
+  createdById String
+  createdBy   User   @relation("DealCreatedBy", fields: [createdById], references: [id])
+  fundedAt    DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  fees          DealFee[]
+  tradeIn       TradeIn?
+  statusHistory DealStatusHistory[]
+  documents     GeneratedDocument[]
+
+  @@index([status])
+  @@index([createdById])
+  @@index([vehicleId])
+  @@index([fundedAt])
+  @@map("deals")
+}
+
+model DealFee {
+  id      String  @id @default(uuid())
+  dealId  String
+  deal    Deal    @relation(fields: [dealId], references: [id])
+  name    String
+  amount  Decimal @db.Decimal(12, 2)
+  taxable Boolean @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([dealId])
+  @@map("deal_fees")
+}
+
+model TradeIn {
+  id        String          @id @default(uuid())
+  dealId    String          @unique
+  deal      Deal            @relation(fields: [dealId], references: [id])
+  vin       String?
+  year      Int
+  make      String
+  model     String
+  mileage   Int
+  condition TradeInCondition
+  acv       Decimal @db.Decimal(12, 2)
+  allowance Decimal @db.Decimal(12, 2)
+  payoff    Decimal @default(0) @db.Decimal(12, 2)
+  lenderName String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("trade_ins")
+}
+
+model DealStatusHistory {
+  id             String      @id @default(uuid())
+  dealId         String
+  deal           Deal        @relation(fields: [dealId], references: [id])
+  previousStatus DealStatus?
+  newStatus      DealStatus
+  actorId        String
+  actorName      String
+  actorRole      String
+  note           String?
+  createdAt      DateTime    @default(now())
+
+  @@index([dealId, createdAt])
+  @@map("deal_status_history")
+}
+
+model GeneratedDocument {
+  id           String       @id @default(uuid())
+  dealId       String
+  deal         Deal         @relation(fields: [dealId], references: [id])
+  documentType DocumentType
+  fileUrl      String
+  generatedAt  DateTime     @default(now())
+
+  @@index([dealId, generatedAt])
+  @@map("generated_documents")
 }

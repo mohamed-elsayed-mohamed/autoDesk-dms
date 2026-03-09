@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Buyer's Order — Deal #{{deal_number}}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; font-size: 11pt; color: #111; padding: 32px; }
+    h1 { font-size: 18pt; text-align: center; margin-bottom: 4px; }
+    .subtitle { text-align: center; font-size: 10pt; color: #555; margin-bottom: 24px; }
+    .section { margin-bottom: 20px; }
+    .section-title { font-size: 11pt; font-weight: bold; border-bottom: 1px solid #333; padding-bottom: 4px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px 24px; }
+    .label { font-size: 9pt; color: #555; }
+    .value { font-size: 11pt; font-weight: 500; }
+    table { width: 100%; border-collapse: collapse; }
+    table th { text-align: left; font-size: 9pt; color: #555; border-bottom: 1px solid #ccc; padding: 4px 8px; }
+    table td { padding: 6px 8px; border-bottom: 1px solid #eee; }
+    .amount { text-align: right; }
+    .totals-table td { font-size: 12pt; }
+    .totals-table .total-row { font-weight: bold; font-size: 13pt; border-top: 2px solid #333; }
+    .finance-box { background: #f5f5f5; border: 1px solid #ddd; border-radius: 6px; padding: 16px; }
+    .signature-block { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 40px; }
+    .sig-line { border-top: 1px solid #555; padding-top: 6px; font-size: 9pt; color: #555; }
+    .footer { text-align: center; font-size: 8pt; color: #888; margin-top: 32px; }
+    .cash-hide { display: {{cash_hide}}; }
+  </style>
+</head>
+<body>
+
+<h1>Buyer's Order</h1>
+<p class="subtitle">{{dealership_name}} &nbsp;|&nbsp; Date: {{date}} &nbsp;|&nbsp; Deal #{{deal_number}}</p>
+
+<!-- Customer Information -->
+<div class="section">
+  <div class="section-title">Customer Information</div>
+  <div class="grid-2">
+    <div><div class="label">Name</div><div class="value">{{customer_name}}</div></div>
+    <div><div class="label">Phone</div><div class="value">{{customer_phone}}</div></div>
+    <div><div class="label">Email</div><div class="value">{{customer_email}}</div></div>
+    <div><div class="label">Address</div><div class="value">{{customer_address}}</div></div>
+  </div>
+</div>
+
+<!-- Vehicle Information -->
+<div class="section">
+  <div class="section-title">Vehicle Information</div>
+  <div class="grid-3">
+    <div><div class="label">Year / Make / Model</div><div class="value">{{vehicle_year_make_model}}</div></div>
+    <div><div class="label">VIN</div><div class="value">{{vehicle_vin}}</div></div>
+    <div><div class="label">Stock #</div><div class="value">{{vehicle_stock_number}}</div></div>
+    <div><div class="label">Trim</div><div class="value">{{vehicle_trim}}</div></div>
+    <div><div class="label">Condition</div><div class="value">{{vehicle_condition}}</div></div>
+    <div><div class="label">Mileage</div><div class="value">{{vehicle_mileage}}</div></div>
+  </div>
+</div>
+
+<!-- Sale Price & Fees -->
+<div class="section">
+  <div class="section-title">Price & Fees</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Description</th>
+        <th>Taxable</th>
+        <th class="amount">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Sale Price</td>
+        <td>Yes</td>
+        <td class="amount">{{sale_price}}</td>
+      </tr>
+      {{fee_rows}}
+    </tbody>
+  </table>
+</div>
+
+<!-- Trade-In -->
+{{trade_in_section}}
+
+<!-- Financial Summary -->
+<div class="section">
+  <div class="section-title">Financial Summary</div>
+  <table class="totals-table">
+    <tbody>
+      <tr><td>Sale Price</td><td class="amount">{{sale_price}}</td></tr>
+      <tr><td>Total Fees</td><td class="amount">{{total_fees}}</td></tr>
+      <tr><td>Tax ({{tax_rate}}%)</td><td class="amount">{{total_tax}}</td></tr>
+      <tr><td>Down Payment</td><td class="amount">({{down_payment}})</td></tr>
+      <tr><td>Rebates</td><td class="amount">({{rebates}})</td></tr>
+      {{net_trade_row}}
+      <tr class="total-row"><td>Amount Financed / Total Due</td><td class="amount">{{amount_financed}}</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Finance Terms (hidden for Cash deals) -->
+<div class="section cash-hide">
+  <div class="section-title">Finance Terms</div>
+  <div class="finance-box">
+    <div class="grid-3">
+      <div><div class="label">APR</div><div class="value">{{apr}}%</div></div>
+      <div><div class="label">Term</div><div class="value">{{term}} months</div></div>
+      <div><div class="label">Monthly Payment</div><div class="value">{{monthly_payment}}</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Signatures -->
+<div class="signature-block">
+  <div>
+    <div class="sig-line">Customer Signature</div>
+    <div style="margin-top: 8px; font-size: 9pt; color: #555">{{customer_name}}</div>
+  </div>
+  <div>
+    <div class="sig-line">Sales Consultant Signature</div>
+    <div style="margin-top: 8px; font-size: 9pt; color: #555">{{sales_consultant_name}}</div>
+  </div>
+</div>
+
+<div class="footer">
+  This is not a legally binding contract until signed by an authorized dealership representative.<br/>
+  Printed: {{date}}
+</div>
+
+</body>
+</html>

@@ -7,4 +7,4 @@ COPY package.json pnpm-lock.yaml* ./
 RUN npm install -g pnpm && pnpm install
 COPY . .
 RUN npx prisma generate
-CMD ["pnpm", "run", "start:dev"]
+CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed && pnpm run start:dev"]

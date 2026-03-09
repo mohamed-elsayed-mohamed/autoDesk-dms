@@ -21,6 +21,14 @@ import LeadDetailPage from './modules/crm/leads/LeadDetailPage';
 import MyTasksPage from './modules/crm/tasks/MyTasksPage';
 import ManagerDashboardPage from './modules/crm/dashboard/ManagerDashboardPage';
 
+import DealListPage from './modules/deals/pages/DealListPage';
+import DealCreatePage from './modules/deals/pages/DealCreatePage';
+import DeskingPage from './modules/deals/pages/DeskingPage';
+import DealJacketPage from './modules/deals/pages/DealJacketPage';
+import ManagerApprovalQueuePage from './modules/deals/pages/ManagerApprovalQueuePage';
+import SalesReportPage from './modules/deals/pages/SalesReportPage';
+import DealErrorBoundary from './modules/deals/components/DealErrorBoundary';
+
 const theme = createTheme({
   palette: {
     primary: { main: '#1565c0' },
@@ -175,6 +183,56 @@ export default function App() {
               element={
                 <ProtectedRoute allowedRoles={[UserRole.SalesManager]}>
                   <ManagerDashboardPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Deals Routes */}
+            <Route
+              path="/deals"
+              element={
+                <ProtectedRoute allowedRoles={[UserRole.SalesConsultant, UserRole.SalesManager, UserRole.FniManager, UserRole.GeneralManager]}>
+                  <DealErrorBoundary pageName="Deal List"><DealListPage /></DealErrorBoundary>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/deals/new"
+              element={
+                <ProtectedRoute allowedRoles={[UserRole.SalesConsultant]}>
+                  <DealErrorBoundary pageName="Create Deal"><DealCreatePage /></DealErrorBoundary>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/deals/:id/jacket"
+              element={
+                <ProtectedRoute allowedRoles={[UserRole.SalesConsultant, UserRole.SalesManager, UserRole.FniManager, UserRole.GeneralManager]}>
+                  <DealErrorBoundary pageName="Deal Jacket"><DealJacketPage /></DealErrorBoundary>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/deals/approval-queue"
+              element={
+                <ProtectedRoute allowedRoles={[UserRole.SalesManager]}>
+                  <DealErrorBoundary pageName="Approval Queue"><ManagerApprovalQueuePage /></DealErrorBoundary>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/deals/:id"
+              element={
+                <ProtectedRoute allowedRoles={[UserRole.SalesConsultant, UserRole.SalesManager, UserRole.FniManager, UserRole.GeneralManager]}>
+                  <DealErrorBoundary pageName="Desking"><DeskingPage /></DealErrorBoundary>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/reports/sales"
+              element={
+                <ProtectedRoute allowedRoles={[UserRole.SalesManager, UserRole.GeneralManager]}>
+                  <DealErrorBoundary pageName="Sales Report"><SalesReportPage /></DealErrorBoundary>
                 </ProtectedRoute>
               }
             />

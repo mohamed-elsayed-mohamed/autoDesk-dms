@@ -18,6 +18,7 @@ export enum UserRole {
   GeneralManager = 'GeneralManager',
   SalesManager = 'SalesManager',
   BDCAgent = 'BDCAgent',
+  FniManager = 'FniManager',
 }
 
 // ─── CRM Enums ────────────────────────────────────────────────────────────────
@@ -371,3 +372,6 @@ export interface VinDecodeResult {
   fuelType?: string;
   reason?: string;
 }
+
+// ─── Deal Types (re-exported from deals module for cross-feature consumption) ─
+export * from '../modules/deals/types/deal.types';

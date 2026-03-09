@@ -5,6 +5,8 @@ import { PrismaModule } from './common/prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { InventoryModule } from './modules/inventory/inventory.module';
 import { CrmModule } from './modules/crm/crm.module';
+import { DealsModule } from './modules/deals/deals.module';
+import { DealershipConfigModule } from './modules/config/config.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { CrmModule } from './modules/crm/crm.module';
     AuthModule,
     InventoryModule,
     CrmModule,
+    DealsModule,
+    DealershipConfigModule,
   ],
   controllers: [],
   providers: [],
