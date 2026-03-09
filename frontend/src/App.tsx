@@ -12,6 +12,15 @@ import VehicleFormPage from './modules/inventory/VehicleFormPage';
 import ArchivedVehiclesPage from './modules/inventory/ArchivedVehiclesPage';
 import DashboardPage from './modules/inventory/DashboardPage';
 
+import CustomerListPage from './modules/crm/customers/CustomerListPage';
+import CustomerFormPage from './modules/crm/customers/CustomerFormPage';
+import CustomerDetailPage from './modules/crm/customers/CustomerDetailPage';
+import LeadListPage from './modules/crm/leads/LeadListPage';
+import LeadFormPage from './modules/crm/leads/LeadFormPage';
+import LeadDetailPage from './modules/crm/leads/LeadDetailPage';
+import MyTasksPage from './modules/crm/tasks/MyTasksPage';
+import ManagerDashboardPage from './modules/crm/dashboard/ManagerDashboardPage';
+
 const theme = createTheme({
   palette: {
     primary: { main: '#1565c0' },
@@ -87,6 +96,88 @@ export default function App() {
               }
             />
             <Route path="/" element={<Navigate to="/vehicles" replace />} />
+
+            {/* CRM Routes */}
+            <Route
+              path="/customers"
+              element={
+                <ProtectedRoute allowedRoles={[UserRole.SalesConsultant, UserRole.BDCAgent, UserRole.SalesManager]}>
+                  <CustomerListPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/customers/new"
+              element={
+                <ProtectedRoute allowedRoles={[UserRole.SalesConsultant, UserRole.BDCAgent, UserRole.SalesManager]}>
+                  <CustomerFormPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/customers/:id/edit"
+              element={
+                <ProtectedRoute allowedRoles={[UserRole.SalesConsultant, UserRole.BDCAgent, UserRole.SalesManager]}>
+                  <CustomerFormPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/customers/:id"
+              element={
+                <ProtectedRoute allowedRoles={[UserRole.SalesConsultant, UserRole.BDCAgent, UserRole.SalesManager]}>
+                  <CustomerDetailPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/leads"
+              element={
+                <ProtectedRoute allowedRoles={[UserRole.SalesConsultant, UserRole.BDCAgent, UserRole.SalesManager]}>
+                  <LeadListPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/leads/new"
+              element={
+                <ProtectedRoute allowedRoles={[UserRole.SalesConsultant, UserRole.BDCAgent, UserRole.SalesManager]}>
+                  <LeadFormPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/leads/:id"
+              element={
+                <ProtectedRoute allowedRoles={[UserRole.SalesConsultant, UserRole.BDCAgent, UserRole.SalesManager]}>
+                  <LeadDetailPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/tasks"
+              element={
+                <ProtectedRoute allowedRoles={[UserRole.SalesConsultant, UserRole.BDCAgent, UserRole.SalesManager]}>
+                  <MyTasksPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/tasks/team"
+              element={
+                <ProtectedRoute allowedRoles={[UserRole.SalesManager]}>
+                  <MyTasksPage teamView />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/crm-dashboard"
+              element={
+                <ProtectedRoute allowedRoles={[UserRole.SalesManager]}>
+                  <ManagerDashboardPage />
+                </ProtectedRoute>
+              }
+            />
           </Route>
         </Routes>
       </AuthProvider>

@@ -24,10 +24,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { UserRole } from '@prisma/client';
 import { InventoryService } from './inventory.service';
 import { VinDecodeService } from './vin-decode.service';
-import {
-  STORAGE_SERVICE,
-  StorageService,
-} from '../../common/storage/storage.service';
+import { STORAGE_SERVICE, StorageService } from '../../common/storage/storage.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { ListVehiclesQueryDto } from './dto/list-vehicles-query.dto';
@@ -45,10 +42,7 @@ export class InventoryController {
 
   @Get('dashboard')
   @Roles(UserRole.GeneralManager, UserRole.InventoryManager)
-  async getDashboard(
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
-  ) {
+  async getDashboard(@Query('page') page?: string, @Query('limit') limit?: string) {
     return this.inventoryService.getDashboard(
       page ? parseInt(page, 10) : 1,
       limit ? Math.min(parseInt(limit, 10), 50) : 25,
@@ -79,10 +73,7 @@ export class InventoryController {
 
   @Post()
   @Roles(UserRole.InventoryManager)
-  async create(
-    @Body() dto: CreateVehicleDto,
-    @CurrentUser() user: { id: string; role: string },
-  ) {
+  async create(@Body() dto: CreateVehicleDto, @CurrentUser() user: { id: string; role: string }) {
     return this.inventoryService.create(dto, user.id);
   }
 
@@ -117,9 +108,7 @@ export class InventoryController {
 
   @Post(':id/photos')
   @Roles(UserRole.InventoryManager)
-  @UseInterceptors(
-    FileInterceptor('file', { limits: { fileSize: 10 * 1024 * 1024 } }),
-  )
+  @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 10 * 1024 * 1024 } }))
   async uploadPhoto(
     @Param('id', ParseUUIDPipe) id: string,
     @UploadedFile() file: Express.Multer.File,
@@ -133,10 +122,7 @@ export class InventoryController {
 
   @Patch(':id/photos/reorder')
   @Roles(UserRole.InventoryManager)
-  async reorderPhotos(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: PhotoReorderDto,
-  ) {
+  async reorderPhotos(@Param('id', ParseUUIDPipe) id: string, @Body() dto: PhotoReorderDto) {
     return this.inventoryService.reorderPhotos(id, dto.order);
   }
 

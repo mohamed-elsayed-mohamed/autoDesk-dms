@@ -16,24 +16,16 @@ const STOCK_NUMBER_START = 1001;
 export class InventoryService {
   constructor(private prisma: PrismaService) {}
 
-  private validateInternetPrice(
-    status: VehicleStatus,
-    internetPrice?: number | null,
-  ) {
+  private validateInternetPrice(status: VehicleStatus, internetPrice?: number | null) {
     if (
       status === VehicleStatus.FrontlineReady &&
       (internetPrice === null || internetPrice === undefined)
     ) {
-      throw new BadRequestException(
-        'internetPrice is required when status is FrontlineReady',
-      );
+      throw new BadRequestException('internetPrice is required when status is FrontlineReady');
     }
   }
 
-  private computeDaysInStock(
-    dateAcquired: Date,
-    dateSold: Date | null,
-  ): number {
+  private computeDaysInStock(dateAcquired: Date, dateSold: Date | null): number {
     const end = dateSold || new Date();
     const diff = end.getTime() - dateAcquired.getTime();
     return Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -46,14 +38,8 @@ export class InventoryService {
       invoicePrice: vehicle.invoicePrice?.toString() ?? null,
       internetPrice: vehicle.internetPrice?.toString() ?? null,
       salePrice: vehicle.salePrice?.toString() ?? null,
-      daysInStock: this.computeDaysInStock(
-        vehicle.dateAcquired,
-        vehicle.dateSold,
-      ),
-      photos:
-        vehicle.photos?.sort(
-          (a: any, b: any) => a.sortOrder - b.sortOrder,
-        ) ?? [],
+      daysInStock: this.computeDaysInStock(vehicle.dateAcquired, vehicle.dateSold),
+      photos: vehicle.photos?.sort((a: any, b: any) => a.sortOrder - b.sortOrder) ?? [],
       history:
         vehicle.history
           ?.map((h: any) => ({
@@ -72,9 +58,7 @@ export class InventoryService {
               : null,
           }))
           .sort(
-            (a: any, b: any) =>
-              new Date(b.changedAt).getTime() -
-              new Date(a.changedAt).getTime(),
+            (a: any, b: any) => new Date(b.changedAt).getTime() - new Date(a.changedAt).getTime(),
           ) ?? [],
     };
   }
@@ -87,9 +71,7 @@ export class InventoryService {
         where: { vin: dto.vin, deletedAt: null },
       });
       if (activeExisting) {
-        throw new BadRequestException(
-          'A vehicle with this VIN already exists',
-        );
+        throw new BadRequestException('A vehicle with this VIN already exists');
       }
 
       const deletedExisting = await tx.vehicle.findFirst({
@@ -97,8 +79,7 @@ export class InventoryService {
       });
       if (deletedExisting) {
         throw new ConflictException({
-          message:
-            'A vehicle with this VIN already exists in your archived records.',
+          message: 'A vehicle with this VIN already exists in your archived records.',
           archivedVehicleId: deletedExisting.id,
           stockNumber: deletedExisting.stockNumber,
         });
@@ -107,8 +88,7 @@ export class InventoryService {
       const maxStock = await tx.vehicle.aggregate({
         _max: { stockNumber: true },
       });
-      const nextStockNumber =
-        (maxStock._max.stockNumber ?? STOCK_NUMBER_START - 1) + 1;
+      const nextStockNumber = (maxStock._max.stockNumber ?? STOCK_NUMBER_START - 1) + 1;
 
       const vehicle = await tx.vehicle.create({
         data: {
@@ -168,9 +148,7 @@ export class InventoryService {
 
     const newStatus = dto.status ?? existing.status;
     const newInternetPrice =
-      dto.internetPrice !== undefined
-        ? dto.internetPrice
-        : existing.internetPrice;
+      dto.internetPrice !== undefined ? dto.internetPrice : existing.internetPrice;
     this.validateInternetPrice(
       newStatus,
       newInternetPrice !== null ? Number(newInternetPrice) : null,
@@ -196,12 +174,7 @@ export class InventoryService {
       });
     }
 
-    const priceFields = [
-      'msrp',
-      'invoicePrice',
-      'internetPrice',
-      'salePrice',
-    ] as const;
+    const priceFields = ['msrp', 'invoicePrice', 'internetPrice', 'salePrice'] as const;
     for (const field of priceFields) {
       if (dto[field] !== undefined) {
         const oldVal = existing[field];
@@ -368,17 +341,13 @@ export class InventoryService {
     }
     if (query.minPrice !== undefined || query.maxPrice !== undefined) {
       where.internetPrice = {};
-      if (query.minPrice !== undefined)
-        where.internetPrice.gte = query.minPrice;
-      if (query.maxPrice !== undefined)
-        where.internetPrice.lte = query.maxPrice;
+      if (query.minPrice !== undefined) where.internetPrice.gte = query.minPrice;
+      if (query.maxPrice !== undefined) where.internetPrice.lte = query.maxPrice;
     }
     if (query.minMileage !== undefined || query.maxMileage !== undefined) {
       where.mileage = {};
-      if (query.minMileage !== undefined)
-        (where.mileage as any).gte = query.minMileage;
-      if (query.maxMileage !== undefined)
-        (where.mileage as any).lte = query.maxMileage;
+      if (query.minMileage !== undefined) (where.mileage as any).gte = query.minMileage;
+      if (query.maxMileage !== undefined) (where.mileage as any).lte = query.maxMileage;
     }
 
     if (query.q) {
@@ -456,8 +425,7 @@ export class InventoryService {
       allActive.length > 0
         ? Math.round(
             allActive.reduce(
-              (sum, v) =>
-                sum + this.computeDaysInStock(v.dateAcquired, v.dateSold),
+              (sum, v) => sum + this.computeDaysInStock(v.dateAcquired, v.dateSold),
               0,
             ) / allActive.length,
           )
@@ -512,10 +480,7 @@ export class InventoryService {
       throw new BadRequestException('Photo limit reached (20/20)');
     }
 
-    const maxSort = vehicle.photos.reduce(
-      (max, p) => Math.max(max, p.sortOrder),
-      -1,
-    );
+    const maxSort = vehicle.photos.reduce((max, p) => Math.max(max, p.sortOrder), -1);
     const isPrimary = vehicle.photos.length === 0;
 
     const photo = await this.prisma.vehiclePhoto.create({
@@ -567,13 +532,8 @@ export class InventoryService {
     const photoIds = new Set(photos.map((p) => p.id));
     const orderSet = new Set(order);
 
-    if (
-      photoIds.size !== orderSet.size ||
-      !order.every((id) => photoIds.has(id))
-    ) {
-      throw new BadRequestException(
-        'Order array does not match the vehicle photo IDs',
-      );
+    if (photoIds.size !== orderSet.size || !order.every((id) => photoIds.has(id))) {
+      throw new BadRequestException('Order array does not match the vehicle photo IDs');
     }
 
     await this.prisma.$transaction(

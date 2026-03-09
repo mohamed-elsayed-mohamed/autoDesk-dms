@@ -4,6 +4,7 @@ import { join } from 'path';
 import { PrismaModule } from './common/prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { InventoryModule } from './modules/inventory/inventory.module';
+import { CrmModule } from './modules/crm/crm.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { InventoryModule } from './modules/inventory/inventory.module';
     PrismaModule,
     AuthModule,
     InventoryModule,
+    CrmModule,
   ],
   controllers: [],
   providers: [],

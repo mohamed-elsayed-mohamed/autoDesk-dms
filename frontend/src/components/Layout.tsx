@@ -18,6 +18,10 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import LogoutIcon from '@mui/icons-material/Logout';
+import PeopleIcon from '@mui/icons-material/People';
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import NotificationBell from './NotificationBell';
 import { useAuth } from '../modules/auth/AuthContext';
 import { UserRole } from '../types';
 
@@ -27,6 +31,8 @@ const roleLabels: Record<string, string> = {
   InventoryManager: 'Inventory Manager',
   SalesConsultant: 'Sales Consultant',
   GeneralManager: 'General Manager',
+  SalesManager: 'Sales Manager',
+  BDCAgent: 'BDC Agent',
 };
 
 export default function Layout() {
@@ -61,6 +67,31 @@ export default function Layout() {
       path: '/dashboard',
       roles: [UserRole.GeneralManager, UserRole.InventoryManager],
     },
+    { label: 'divider-crm', icon: null, path: '', roles: [UserRole.SalesConsultant, UserRole.BDCAgent, UserRole.SalesManager] },
+    {
+      label: 'Customers',
+      icon: <PeopleIcon />,
+      path: '/customers',
+      roles: [UserRole.SalesConsultant, UserRole.BDCAgent, UserRole.SalesManager],
+    },
+    {
+      label: 'Leads',
+      icon: <LeaderboardIcon />,
+      path: '/leads',
+      roles: [UserRole.SalesConsultant, UserRole.BDCAgent, UserRole.SalesManager],
+    },
+    {
+      label: 'My Tasks',
+      icon: <AssignmentIcon />,
+      path: '/tasks',
+      roles: [UserRole.SalesConsultant, UserRole.BDCAgent, UserRole.SalesManager],
+    },
+    {
+      label: 'CRM Dashboard',
+      icon: <DashboardIcon />,
+      path: '/crm-dashboard',
+      roles: [UserRole.SalesManager],
+    },
   ];
 
   const visibleItems = navItems.filter((item) => item.roles.includes(user.role));
@@ -82,6 +113,7 @@ export default function Layout() {
           <Typography variant="body2" sx={{ mr: 2, color: 'rgba(255,255,255,0.9)' }}>
             {user.firstName} {user.lastName}
           </Typography>
+          <NotificationBell />
           <IconButton color="inherit" onClick={logout} title="Sign out">
             <LogoutIcon />
           </IconButton>
@@ -99,17 +131,21 @@ export default function Layout() {
         <Toolbar />
         <Box sx={{ overflow: 'auto', mt: 1 }}>
           <List>
-            {visibleItems.map((item) => (
-              <ListItemButton
-                key={item.path}
-                selected={location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path))}
-                onClick={() => navigate(item.path)}
-                sx={{ borderRadius: 1, mx: 1, mb: 0.5 }}
-              >
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.label} />
-              </ListItemButton>
-            ))}
+            {visibleItems.map((item) =>
+              item.label.startsWith('divider') ? (
+                <Box key={item.label} sx={{ mx: 2, my: 1, borderTop: '1px solid', borderColor: 'divider' }} />
+              ) : (
+                <ListItemButton
+                  key={item.path}
+                  selected={location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path))}
+                  onClick={() => navigate(item.path)}
+                  sx={{ borderRadius: 1, mx: 1, mb: 0.5 }}
+                >
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.label} />
+                </ListItemButton>
+              )
+            )}
           </List>
         </Box>
       </Drawer>

@@ -9,6 +9,8 @@ alwaysApply: true
 Auto-generated from all feature plans. Last updated: 2026-03-08
 
 ## Active Technologies
+- TypeScript 5.x (Node.js 20 LTS backend, React 18 frontend) + NestJS 10, Prisma 5.20, React 18, MUI 6, Axios, react-router-dom 6 (002-crm)
+- PostgreSQL (via Prisma ORM) (002-crm)
 
 - TypeScript 5.x (Node.js 20 LTS backend, React 18 frontend) + NestJS, Prisma, React, Material UI or Ant Design; AWS SDK (S3); JWT (e.g. @nestjs/jwt) (001-vehicle-inventory)
 
@@ -28,6 +30,7 @@ npm test && npm run lint
 TypeScript 5.x (Node.js 20 LTS backend, React 18 frontend): Follow standard conventions
 
 ## Recent Changes
+- 002-crm: Added TypeScript 5.x (Node.js 20 LTS backend, React 18 frontend) + NestJS 10, Prisma 5.20, React 18, MUI 6, Axios, react-router-dom 6
 
 - 001-vehicle-inventory: Added TypeScript 5.x (Node.js 20 LTS backend, React 18 frontend) + NestJS, Prisma, React, Material UI or Ant Design; AWS SDK (S3); JWT (e.g. @nestjs/jwt)
 

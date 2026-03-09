@@ -97,8 +97,9 @@ floating point.
 
 Authentication via JWT with role-based access control (RBAC).
 
-- Roles: Admin, SalesConsultant, SalesManager, FIManager,
-  ServiceAdvisor, Technician, PartsAdvisor, Controller.
+- Roles: Admin, SalesConsultant, SalesManager, BDCAgent,
+  FIManager, ServiceAdvisor, Technician, PartsAdvisor,
+  Controller.
 - Sensitive data (SSN, driver's license numbers) MUST be
   encrypted at rest.
 - API endpoints MUST enforce authorization at the controller

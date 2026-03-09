@@ -1,12 +1,4 @@
-import {
-  IsString,
-  IsInt,
-  IsEnum,
-  IsOptional,
-  IsNumber,
-  Min,
-  IsDateString,
-} from 'class-validator';
+import { IsString, IsInt, IsEnum, IsOptional, IsNumber, Min, IsDateString } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Condition, VehicleStatus } from '@prisma/client';
 
