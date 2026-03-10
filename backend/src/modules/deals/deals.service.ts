@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  ForbiddenException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../../common/prisma/prisma.service';
 import { DealsRepository } from './deals.repository';
 import { DealCalculationService } from './calculation/deal-calculation.service';
@@ -18,10 +14,7 @@ const ALL_DEALS_ROLES: UserRole[] = [
 ];
 
 /** Statuses that lock financial editing. */
-const EDIT_LOCKED_STATUSES: DealStatus[] = [
-  DealStatus.Funded,
-  DealStatus.Unwound,
-];
+const EDIT_LOCKED_STATUSES: DealStatus[] = [DealStatus.Funded, DealStatus.Unwound];
 
 export interface RequestingUser {
   id: string;
@@ -76,13 +69,16 @@ export class DealsService {
     });
   }
 
-  async findAll(actor: RequestingUser, query: {
-    status?: DealStatus;
-    startDate?: Date;
-    endDate?: Date;
-    page?: number;
-    pageSize?: number;
-  }) {
+  async findAll(
+    actor: RequestingUser,
+    query: {
+      status?: DealStatus;
+      startDate?: Date;
+      endDate?: Date;
+      page?: number;
+      pageSize?: number;
+    },
+  ) {
     const scopedToUserId = ALL_DEALS_ROLES.includes(actor.role) ? undefined : actor.id;
     return this.dealsRepository.findAll({ scopedToUserId, ...query });
   }
@@ -92,7 +88,7 @@ export class DealsService {
   }
 
   async updateDesking(id: string, dto: UpdateDealDto, actor: RequestingUser): Promise<Deal> {
-    const deal = await this.dealsRepository.findOneById(id) as any;
+    const deal = (await this.dealsRepository.findOneById(id)) as any;
 
     // Only the creator can edit (for SalesConsultant)
     if (actor.role === UserRole.SalesConsultant && deal.createdById !== actor.id) {
@@ -152,7 +148,7 @@ export class DealsService {
 
   /** Recalculate deal totals after any mutating sub-resource change (fees, trade-in). */
   async recalculateAndPersist(dealId: string): Promise<void> {
-    const deal = await this.dealsRepository.findOneById(dealId) as any;
+    const deal = (await this.dealsRepository.findOneById(dealId)) as any;
 
     const vehicle = await this.prisma.vehicle.findUnique({
       where: { id: deal.vehicleId },

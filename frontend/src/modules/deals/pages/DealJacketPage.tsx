@@ -16,33 +16,30 @@ import {
   Paper,
   Skeleton,
   Stack,
+  Tab,
+  Tabs,
   TextField,
   Typography,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { DealStatus, DealType } from '../types/deal.types';
 import { useDeal } from '../hooks/useDeal';
+import { useAuth } from '../../auth/AuthContext';
 import StatusBadge from '../components/StatusBadge';
 import StatusHistoryTimeline from '../components/StatusHistoryTimeline';
 import DocumentsList from '../components/DocumentsList';
+import { CreditApplicationPage } from '../../fi/pages/CreditApplicationPage';
+import { LenderSubmissionPage } from '../../fi/pages/LenderSubmissionPage';
+import { FiProductMenuPage } from '../../fi/pages/FiProductMenuPage';
+import { DisclosureChecklistPage } from '../../fi/pages/DisclosureChecklistPage';
 
 const BASE_URL = import.meta.env.VITE_API_URL || '';
 
-function getToken() {
+function getToken(): Record<string, string> {
   const token = localStorage.getItem('accessToken');
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-function getCurrentUserRole(): string | null {
-  try {
-    const raw = localStorage.getItem('user');
-    if (!raw) return null;
-    const user = JSON.parse(raw);
-    return user?.role ?? null;
-  } catch {
-    return null;
-  }
-}
 
 function fmt(value: string | number | null | undefined, prefix = '$'): string {
   if (value === null || value === undefined) return '—';
@@ -160,11 +157,11 @@ function NoteDialog({ open, title, onConfirm, onCancel, submitting }: NoteDialog
 interface PipelineActionsProps {
   dealId: string;
   status: DealStatus;
+  userRole: string | null;
   onSuccess: () => void;
 }
 
-function PipelineActions({ dealId, status, onSuccess }: PipelineActionsProps) {
-  const userRole = getCurrentUserRole();
+function PipelineActions({ dealId, status, userRole, onSuccess }: PipelineActionsProps) {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogConfig, setDialogConfig] = useState<{
@@ -369,7 +366,9 @@ function PipelineActions({ dealId, status, onSuccess }: PipelineActionsProps) {
 export default function DealJacketPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { deal, loading, error, refetch } = useDeal(id ?? '');
+  const [tab, setTab] = useState(0);
 
   if (loading && !deal) {
     return (
@@ -407,8 +406,12 @@ export default function DealJacketPage() {
     ? `${deal.vehicle.year} ${deal.vehicle.make} ${deal.vehicle.model}${deal.vehicle.trim ? ` ${deal.vehicle.trim}` : ''}`
     : '—';
 
-  const userRole = getCurrentUserRole();
+  const userRole = user?.role ?? null;
   const isCash = deal.dealType === DealType.Cash;
+
+  const showFiTabs = [DealStatus.Fni, DealStatus.ContractsSigned, DealStatus.Delivered, DealStatus.Funded].includes(deal.status);
+  const fiReadOnly = deal.status === DealStatus.Funded || deal.status === DealStatus.Unwound || userRole === 'SalesManager';
+  const productsReadOnly = deal.status === DealStatus.Delivered || deal.status === DealStatus.Funded || deal.status === DealStatus.Unwound || userRole === 'SalesManager';
 
   // Net trade calculation
   const netTrade = deal.tradeIn
@@ -441,6 +444,46 @@ export default function DealJacketPage() {
         </Box>
       </Paper>
 
+      {/* F&I Tabs — shown when deal has reached F&I stage */}
+      {showFiTabs && (
+        <Paper sx={{ mb: 2 }}>
+          <Tabs
+            value={tab}
+            onChange={(_, v) => setTab(v)}
+            variant="scrollable"
+            scrollButtons="auto"
+            sx={{ borderBottom: '1px solid', borderColor: 'divider' }}
+          >
+            <Tab label="Deal Info" />
+            <Tab label="Credit Application" />
+            <Tab label="Lender Submission" />
+            <Tab label="F&I Products" />
+            <Tab label="Disclosures" />
+          </Tabs>
+        </Paper>
+      )}
+
+      {/* F&I tab panels */}
+      {showFiTabs && tab === 1 && (
+        <CreditApplicationPage dealId={deal.id} customerId={deal.customer?.id} readOnly={fiReadOnly} />
+      )}
+      {showFiTabs && tab === 2 && (
+        <LenderSubmissionPage dealId={deal.id} readOnly={fiReadOnly} />
+      )}
+      {showFiTabs && tab === 3 && (
+        <FiProductMenuPage
+          dealId={deal.id}
+          dealBackEndGross={deal.backEndGross != null ? parseFloat(String(deal.backEndGross)) : undefined}
+          dealDelivered={deal.status === DealStatus.Delivered}
+          readOnly={productsReadOnly}
+        />
+      )}
+      {showFiTabs && tab === 4 && (
+        <DisclosureChecklistPage dealId={deal.id} readOnly={fiReadOnly} />
+      )}
+
+      {/* Deal Info tab (tab 0, or always shown when no fi tabs) */}
+      <Box sx={{ display: (!showFiTabs || tab === 0) ? 'block' : 'none' }}>
       <Grid container spacing={2}>
         {/* ── Left column (2/3) ── */}
         <Grid item xs={12} md={8}>
@@ -587,7 +630,7 @@ export default function DealJacketPage() {
                 Pipeline Actions
               </Typography>
               <Divider sx={{ mb: 1.5 }} />
-              <PipelineActions dealId={deal.id} status={deal.status} onSuccess={refetch} />
+              <PipelineActions dealId={deal.id} status={deal.status} userRole={userRole} onSuccess={refetch} />
               {(deal.status === DealStatus.Funded || deal.status === DealStatus.Unwound) && (
                 <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
                   This deal is in a terminal state. No further actions are available.
@@ -608,6 +651,7 @@ export default function DealJacketPage() {
           </Card>
         </Grid>
       </Grid>
+      </Box>
     </Box>
   );
 }

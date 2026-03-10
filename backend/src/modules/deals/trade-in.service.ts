@@ -1,10 +1,19 @@
-import { Injectable, NotFoundException, ForbiddenException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  ConflictException,
+} from '@nestjs/common';
 import { PrismaService } from '../../common/prisma/prisma.service';
 import { DealsService } from './deals.service';
 import { UpsertTradeInDto } from './dto/upsert-trade-in.dto';
 import { TradeIn, DealStatus } from '@prisma/client';
 
-const EDIT_LOCKED_STATUSES: DealStatus[] = [DealStatus.Delivered, DealStatus.Funded, DealStatus.Unwound];
+const EDIT_LOCKED_STATUSES: DealStatus[] = [
+  DealStatus.Delivered,
+  DealStatus.Funded,
+  DealStatus.Unwound,
+];
 
 @Injectable()
 export class TradeInService {
@@ -14,10 +23,15 @@ export class TradeInService {
   ) {}
 
   private async guardEditAccess(dealId: string): Promise<void> {
-    const deal = await this.prisma.deal.findUnique({ where: { id: dealId }, select: { status: true } });
+    const deal = await this.prisma.deal.findUnique({
+      where: { id: dealId },
+      select: { status: true },
+    });
     if (!deal) throw new NotFoundException(`Deal ${dealId} not found.`);
     if (EDIT_LOCKED_STATUSES.includes(deal.status)) {
-      throw new ForbiddenException(`Trade-in editing is locked when deal is in ${deal.status} status.`);
+      throw new ForbiddenException(
+        `Trade-in editing is locked when deal is in ${deal.status} status.`,
+      );
     }
   }
 
@@ -25,7 +39,10 @@ export class TradeInService {
     await this.guardEditAccess(dealId);
     const existing = await this.prisma.tradeIn.findUnique({ where: { dealId } });
     if (existing) {
-      throw new ConflictException({ error: 'TRADE_IN_EXISTS', message: 'Use PATCH to update the existing trade-in.' });
+      throw new ConflictException({
+        error: 'TRADE_IN_EXISTS',
+        message: 'Use PATCH to update the existing trade-in.',
+      });
     }
     const tradeIn = await this.prisma.tradeIn.create({
       data: { dealId, ...dto },

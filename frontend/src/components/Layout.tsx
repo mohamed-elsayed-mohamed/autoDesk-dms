@@ -21,6 +21,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import PeopleIcon from '@mui/icons-material/People';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import GavelIcon from '@mui/icons-material/Gavel';
+import BarChartIcon from '@mui/icons-material/BarChart';
 import NotificationBell from './NotificationBell';
 import { useAuth } from '../modules/auth/AuthContext';
 import { UserRole } from '../types';
@@ -33,6 +35,8 @@ const roleLabels: Record<string, string> = {
   GeneralManager: 'General Manager',
   SalesManager: 'Sales Manager',
   BDCAgent: 'BDC Agent',
+  FniManager: 'F&I Manager',
+  Controller: 'Controller',
 };
 
 export default function Layout() {
@@ -91,6 +95,38 @@ export default function Layout() {
       icon: <DashboardIcon />,
       path: '/crm-dashboard',
       roles: [UserRole.SalesManager],
+    },
+    { label: 'divider-deals', icon: null, path: '', roles: [UserRole.SalesConsultant, UserRole.SalesManager] },
+    {
+      label: 'Deals',
+      icon: <GavelIcon />,
+      path: '/deals',
+      roles: [UserRole.SalesConsultant, UserRole.SalesManager],
+    },
+    {
+      label: 'Approval Queue',
+      icon: <AssignmentIcon />,
+      path: '/deals/approval-queue',
+      roles: [UserRole.SalesManager],
+    },
+    {
+      label: 'Sales Report',
+      icon: <BarChartIcon />,
+      path: '/reports/sales',
+      roles: [UserRole.SalesManager],
+    },
+    { label: 'divider-fi', icon: null, path: '', roles: [UserRole.FniManager, UserRole.Controller] },
+    {
+      label: 'Deals',
+      icon: <GavelIcon />,
+      path: '/deals',
+      roles: [UserRole.FniManager, UserRole.Controller],
+    },
+    {
+      label: 'F&I Performance Report',
+      icon: <BarChartIcon />,
+      path: '/reports/fi-performance',
+      roles: [UserRole.FniManager, UserRole.Controller],
     },
   ];
 

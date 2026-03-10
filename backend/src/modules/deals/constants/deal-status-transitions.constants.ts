@@ -8,9 +8,7 @@ interface AllowedTransition {
 }
 
 export const DEAL_STATUS_TRANSITIONS: Record<DealStatus, AllowedTransition[]> = {
-  [DealStatus.Pending]: [
-    { to: DealStatus.Desking, roles: [UserRole.SalesConsultant] },
-  ],
+  [DealStatus.Pending]: [{ to: DealStatus.Desking, roles: [UserRole.SalesConsultant] }],
   [DealStatus.Desking]: [
     { to: DealStatus.Fni, roles: [UserRole.SalesManager] },
     { to: DealStatus.Unwound, roles: [UserRole.SalesConsultant], noteRequired: true },

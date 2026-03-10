@@ -1,10 +1,22 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
-import { AuthProvider } from './modules/auth/AuthContext';
+import { AuthProvider, useAuth } from './modules/auth/AuthContext';
 import LoginPage from './modules/auth/LoginPage';
 import ProtectedRoute from './modules/auth/ProtectedRoute';
 import Layout from './components/Layout';
 import { UserRole } from './types';
+
+function RoleDefaultRedirect() {
+  const { user } = useAuth();
+  if (!user) return <Navigate to="/login" replace />;
+  if (user.role === UserRole.FniManager || user.role === UserRole.Controller) {
+    return <Navigate to="/deals" replace />;
+  }
+  if (user.role === UserRole.BDCAgent) {
+    return <Navigate to="/leads" replace />;
+  }
+  return <Navigate to="/vehicles" replace />;
+}
 
 import VehicleListPage from './modules/inventory/VehicleListPage';
 import VehicleDetailPage from './modules/inventory/VehicleDetailPage';
@@ -28,6 +40,8 @@ import DealJacketPage from './modules/deals/pages/DealJacketPage';
 import ManagerApprovalQueuePage from './modules/deals/pages/ManagerApprovalQueuePage';
 import SalesReportPage from './modules/deals/pages/SalesReportPage';
 import DealErrorBoundary from './modules/deals/components/DealErrorBoundary';
+
+import { FiPerformanceReportPage } from './modules/fi/pages/FiPerformanceReportPage';
 
 const theme = createTheme({
   palette: {
@@ -103,7 +117,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            <Route path="/" element={<Navigate to="/vehicles" replace />} />
+            <Route path="/" element={<RoleDefaultRedirect />} />
 
             {/* CRM Routes */}
             <Route
@@ -191,7 +205,7 @@ export default function App() {
             <Route
               path="/deals"
               element={
-                <ProtectedRoute allowedRoles={[UserRole.SalesConsultant, UserRole.SalesManager, UserRole.FniManager, UserRole.GeneralManager]}>
+                <ProtectedRoute allowedRoles={[UserRole.SalesConsultant, UserRole.SalesManager, UserRole.FniManager, UserRole.Controller, UserRole.GeneralManager]}>
                   <DealErrorBoundary pageName="Deal List"><DealListPage /></DealErrorBoundary>
                 </ProtectedRoute>
               }
@@ -207,7 +221,7 @@ export default function App() {
             <Route
               path="/deals/:id/jacket"
               element={
-                <ProtectedRoute allowedRoles={[UserRole.SalesConsultant, UserRole.SalesManager, UserRole.FniManager, UserRole.GeneralManager]}>
+                <ProtectedRoute allowedRoles={[UserRole.SalesConsultant, UserRole.SalesManager, UserRole.FniManager, UserRole.Controller, UserRole.GeneralManager]}>
                   <DealErrorBoundary pageName="Deal Jacket"><DealJacketPage /></DealErrorBoundary>
                 </ProtectedRoute>
               }
@@ -223,7 +237,7 @@ export default function App() {
             <Route
               path="/deals/:id"
               element={
-                <ProtectedRoute allowedRoles={[UserRole.SalesConsultant, UserRole.SalesManager, UserRole.FniManager, UserRole.GeneralManager]}>
+                <ProtectedRoute allowedRoles={[UserRole.SalesConsultant, UserRole.SalesManager, UserRole.FniManager, UserRole.Controller, UserRole.GeneralManager]}>
                   <DealErrorBoundary pageName="Desking"><DeskingPage /></DealErrorBoundary>
                 </ProtectedRoute>
               }
@@ -233,6 +247,14 @@ export default function App() {
               element={
                 <ProtectedRoute allowedRoles={[UserRole.SalesManager, UserRole.GeneralManager]}>
                   <DealErrorBoundary pageName="Sales Report"><SalesReportPage /></DealErrorBoundary>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/reports/fi-performance"
+              element={
+                <ProtectedRoute allowedRoles={[UserRole.FniManager, UserRole.Controller]}>
+                  <FiPerformanceReportPage />
                 </ProtectedRoute>
               }
             />

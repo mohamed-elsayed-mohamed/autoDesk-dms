@@ -7,6 +7,7 @@ import { InventoryModule } from './modules/inventory/inventory.module';
 import { CrmModule } from './modules/crm/crm.module';
 import { DealsModule } from './modules/deals/deals.module';
 import { DealershipConfigModule } from './modules/config/config.module';
+import { FiModule } from './modules/fi/fi.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { DealershipConfigModule } from './modules/config/config.module';
     CrmModule,
     DealsModule,
     DealershipConfigModule,
+    FiModule,
   ],
   controllers: [],
   providers: [],

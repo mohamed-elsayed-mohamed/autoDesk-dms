@@ -22,7 +22,7 @@ import { DocumentType, GeneratedDocument } from '../types/deal.types';
 
 const BASE_URL = import.meta.env.VITE_API_URL || '';
 
-function getToken() {
+function getToken(): Record<string, string> {
   const token = localStorage.getItem('accessToken');
   return token ? { Authorization: `Bearer ${token}` } : {};
 }

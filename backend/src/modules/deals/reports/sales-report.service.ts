@@ -3,7 +3,6 @@ import { PrismaService } from '../../../common/prisma/prisma.service';
 import { SalesReportQueryDto } from '../dto/sales-report-query.dto';
 import { DealStatus } from '@prisma/client';
 import * as fastCsv from 'fast-csv';
-import { Readable } from 'stream';
 
 interface SalespersonBreakdown {
   userId: string;

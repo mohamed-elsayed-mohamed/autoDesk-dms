@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Get,
-  Query,
-  UseGuards,
-  Res,
-  Header,
-} from '@nestjs/common';
+import { Controller, Get, Query, UseGuards, Res, Header } from '@nestjs/common';
 import { Response } from 'express';
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../../common/guards/roles.guard';
@@ -29,10 +22,8 @@ export class SalesReportController {
   @Get('export')
   @Header('Content-Type', 'text/csv')
   @Header('Content-Disposition', 'attachment; filename="sales-report.csv"')
-  async exportCsv(
-    @Query() dto: SalesReportQueryDto,
-    @Res({ passthrough: true }) _res: Response,
-  ) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async exportCsv(@Query() dto: SalesReportQueryDto, @Res({ passthrough: true }) _res: Response) {
     const buffer = await this.salesReportService.generateCsv(dto);
     return new StreamableFile(buffer);
   }

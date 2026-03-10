@@ -1,6 +1,6 @@
 import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../common/prisma/prisma.service';
-import { Deal, DealStatus, Prisma, UserRole } from '@prisma/client';
+import { Deal, DealStatus, Prisma } from '@prisma/client';
 
 export interface CreateDealInput {
   customerId: string;
@@ -69,7 +69,10 @@ export class DealsRepository {
     if (excludeDealId) {
       where.id = { not: excludeDealId };
     }
-    const existing = await this.prisma.deal.findFirst({ where, select: { id: true, dealNumber: true } });
+    const existing = await this.prisma.deal.findFirst({
+      where,
+      select: { id: true, dealNumber: true },
+    });
     if (existing) {
       throw new ConflictException({
         error: 'VEHICLE_COMMITTED',
@@ -135,7 +138,10 @@ export class DealsRepository {
     expectedUpdatedAt: Date,
   ): Promise<Deal> {
     // Optimistic concurrency check — compare client's updatedAt with DB value
-    const current = await this.prisma.deal.findUnique({ where: { id }, select: { updatedAt: true } });
+    const current = await this.prisma.deal.findUnique({
+      where: { id },
+      select: { updatedAt: true },
+    });
     if (!current) throw new NotFoundException(`Deal ${id} not found.`);
 
     if (current.updatedAt.getTime() !== expectedUpdatedAt.getTime()) {

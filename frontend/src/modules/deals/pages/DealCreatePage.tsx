@@ -25,7 +25,7 @@ const BASE_URL = import.meta.env.VITE_API_URL || '';
 interface CustomerOption { id: string; firstName: string; lastName: string; email: string | null }
 interface VehicleOption { id: string; year: number; make: string; model: string; stockNumber: number }
 
-function getToken() {
+function getToken(): Record<string, string> {
   const token = localStorage.getItem('accessToken');
   return token ? { Authorization: `Bearer ${token}` } : {};
 }

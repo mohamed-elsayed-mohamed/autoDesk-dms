@@ -5,8 +5,7 @@ import {
   Param,
   Body,
   UseGuards,
-  ParseUUIDPipe,
-  HttpCode,
+    HttpCode,
   HttpStatus,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -27,7 +26,7 @@ export class DealDocumentsController {
   @Roles(UserRole.SalesConsultant, UserRole.FniManager)
   @HttpCode(HttpStatus.CREATED)
   async generateDocument(
-    @Param('dealId', ParseUUIDPipe) dealId: string,
+    @Param('dealId') dealId: string,
     @Body() dto: GenerateDocumentDto,
     @CurrentUser() actor: RequestingUser,
   ) {
@@ -35,14 +34,14 @@ export class DealDocumentsController {
   }
 
   @Get()
-  async listDocuments(@Param('dealId', ParseUUIDPipe) dealId: string) {
+  async listDocuments(@Param('dealId') dealId: string) {
     return this.documentsService.listDocuments(dealId);
   }
 
   @Get(':documentId/download')
   async getDownloadUrl(
-    @Param('dealId', ParseUUIDPipe) dealId: string,
-    @Param('documentId', ParseUUIDPipe) documentId: string,
+    @Param('dealId') dealId: string,
+    @Param('documentId') documentId: string,
   ) {
     return this.documentsService.getDownloadUrl(dealId, documentId);
   }

@@ -5,11 +5,7 @@ import { DocumentType, GeneratedDocument } from '@prisma/client';
 import { RequestingUser } from './deals.service';
 import * as fs from 'fs';
 import * as path from 'path';
-import {
-  S3Client,
-  PutObjectCommand,
-  GetObjectCommand,
-} from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import puppeteer from 'puppeteer';
 
@@ -71,7 +67,7 @@ export class DealDocumentsService {
   async generateDocument(
     dealId: string,
     dto: GenerateDocumentDto,
-    actor: RequestingUser,
+    _actor: RequestingUser,
   ): Promise<GeneratedDocument> {
     const deal = await this.prisma.deal.findUnique({
       where: { id: dealId },

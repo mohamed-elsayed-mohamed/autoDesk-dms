@@ -1,225 +1,186 @@
 # AutoDesk DMS — Demo Walkthrough
 
-**A complete end-to-end guide for presenting the dealership management system.**
+**AutoDesk DMS** is a Dealer Management System for automotive dealerships. It manages the full lifecycle of a car deal — from the moment a customer walks in to the day the loan is funded — and everything in between: inventory, leads, financing, F&I products, compliance, and reporting.
+
+This guide walks you through each role from most feature-rich to most focused.
 
 ---
 
-## Quick Start — Login Credentials
+## Login Credentials
 
-| Role | Email | Password | Can do |
-|---|---|---|---|
-| Sales Consultant | `sales1@autodesk-dms.com` | `password123` | Create deals, desk, add trade-ins/fees |
-| Sales Consultant | `sales2@autodesk-dms.com` | `password123` | Second consultant for multi-user flows |
-| Sales Manager | `manager@autodesk-dms.com` | `password123` | Approve deals, view all deals, sales report |
-| F&I Manager | `fni@autodesk-dms.com` | `password123` | Process F&I, generate documents |
-| General Manager | `gm@dms.local` | `password123` | Full access, sales report, config |
-| Inventory Manager | `inventory@dms.local` | `password123` | Manage vehicle inventory |
-| BDC Agent | `bdc@autodesk-dms.com` | `password123` | Manage leads and customers |
+| Role | Email | Password |
+|---|---|---|
+| F&I Manager | `fni@autodesk-dms.com` | `password123` |
+| Sales Manager | `manager@autodesk-dms.com` | `password123` |
+| Sales Consultant | `sales1@autodesk-dms.com` | `password123` |
+| Controller | `controller@autodesk-dms.com` | `password123` |
+| BDC Agent | `bdc@autodesk-dms.com` | `password123` |
+| Inventory Manager | `inventory@dms.local` | `password123` |
+| General Manager | `gm@dms.local` | `password123` |
 
 ---
 
 ## What's Already in the System
 
-The database is seeded with **4–5 months of realistic activity** (October 2025 – March 2026):
+The database is pre-loaded with **4–5 months of realistic dealership activity** (October 2025 – March 2026) so you can explore without setting anything up:
 
-- **20 vehicles** — 8 sold, 8 on the frontline, 2 in reconditioning, 2 in transit
-- **15 customers** with contact history
-- **14 leads** across all pipeline stages
-- **13 deals** — 6 funded (historical), plus active deals at every pipeline stage
-- **27 activities** (calls, emails, texts, visits)
-- **16 tasks** for the sales team
-
----
-
-## Workflow 1 — Inventory Management
-
-**Login as:** `inventory@dms.local`
-
-### Step 1 — Browse the Lot
-1. Click **Vehicles** in the left nav
-2. The list shows all active inventory — filter by status: **Frontline Ready**, **In Recon**, **In Transit**
-3. Click any vehicle to see full detail: VIN, stock number, pricing, condition, lot location
-
-### Step 2 — Add a New Vehicle
-1. Click **+ Add Vehicle** (top right)
-2. Fill in: VIN, stock number, year/make/model, condition (New/Used/CPO), MSRP, invoice price, status
-3. Save — the vehicle appears in the list immediately
-
-### Step 3 — View Sold Vehicles
-1. Use the status filter to show **Sold** vehicles
-2. Each sold vehicle is linked to a deal — you can see when it sold and for how much
+| Data | Count | Details |
+|---|---|---|
+| Deals | 13 | 6 funded, 1 unwound, 1 delivered, 1 contracts signed, 1 in F&I, 1 desking, 1 pending |
+| Vehicles | 20 | 8 sold, 8 on the frontline, 2 in recon, 2 in transit |
+| Customers | 15 | With full contact history |
+| Leads | 14 | Across all pipeline stages |
+| Lenders | 5 | Ally Financial, Chase Auto, Capital One, TD Auto Finance, Westlake |
+| F&I Product Catalog | 8 | VSC, GAP, Tire & Wheel, Paint Protection, Maintenance Plan, Other |
+| F&I Products on Deals | 9 | Seeded on 5 funded deals — performance report data ready |
+| Disclosures | 3 | US-DEFAULT jurisdiction requirements |
 
 ---
 
-## Workflow 2 — CRM: Lead to Customer
-
-**Login as:** `bdc@autodesk-dms.com`
-
-### Step 1 — Manage Leads
-1. Click **Leads** in the left nav
-2. You'll see 14 leads in various stages — New, Contacted, Appointment Set, Showed, Negotiating, Sold, Lost
-3. Click a lead (e.g., **Rachel Simmons** — currently Negotiating) to open it
-
-### Step 2 — Work a Lead
-1. Inside the lead, log a **Call activity**: "Called Rachel, confirmed she's still interested in the RAV4 CPO"
-2. Create a **Follow-Up task** due tomorrow: "Send pricing sheet for RAV4 CPO"
-3. Advance the lead status: **Negotiating → Showed** (or further if needed)
-
-### Step 3 — Customer Profiles
-1. Click **Customers** in the left nav
-2. Find **James Kowalski** — he has a funded deal (Deal #1001, Toyota Camry XSE V6, October 2025)
-3. His profile shows all activities, linked leads, and purchase history
-
----
-
-## Workflow 3 — Creating a New Deal (Sales Consultant)
-
-**Login as:** `sales1@autodesk-dms.com`
-
-> **Scenario:** A customer walks in and wants to finance a 2025 Toyota Camry SE.
-
-### Step 1 — Create the Deal
-1. Click **Deals** → **+ New Deal**
-2. **Customer search:** Type "Kowalski" or any name — select from the dropdown
-   - Or pick any customer from the list
-3. **Vehicle search:** Type "Camry" — select the **2025 Toyota Camry SE** (Stock #2009, Frontline Ready)
-4. **Deal Type:** Select **Finance**
-5. Click **Create Deal**
-
-### Step 2 — Desk the Deal
-You're now on the **Desking page**. Enter the deal terms:
-
-| Field | Value |
-|---|---|
-| Sale Price | `34,500` |
-| Down Payment | `4,000` |
-| Rebates | `500` |
-| APR | `6.49` |
-| Term | `60` |
-| Tax Rate | `8.00` |
-
-Click **Recalculate** — the panel instantly shows:
-- **Total Tax** (calculated on sale price + taxable fees)
-- **Amount Financed**
-- **Monthly Payment** (standard amortization formula)
-- **Front-End Gross** (sale price minus invoice)
-
-### Step 3 — Add Fees
-In the **Fees** section:
-1. Click **+ Add Fee**
-2. Add **Documentation Fee** — `$499` — taxable ✓
-3. Add **Title & License** — `$250` — not taxable
-4. Watch the totals recalculate automatically
-
-### Step 4 — Add a Trade-In (optional)
-1. Click **+ Add Trade-In**
-2. Enter: 2020 Honda Civic, 42,000 miles, Good condition
-   - ACV: `$14,000` | Allowance: `$15,000` | Payoff: `$8,500`
-3. **Net Trade** shows as `$6,500` → automatically reduces amount financed
-
----
-
-## Workflow 4 — Manager Approval
-
-**Login as:** `manager@autodesk-dms.com`
-
-### Step 1 — Approval Queue
-1. Click **Deals** → **Approval Queue**
-2. You'll see all deals in **Desking** status waiting for your review
-3. Find the deal just created by the consultant
-
-### Step 2 — Approve or Send Back
-**Option A — Approve:**
-- Click **Approve** → deal advances to **F&I** status
-
-**Option B — Send Back:**
-- Click **Send Back** → a dialog opens requiring a note
-- Type: "Need to verify trade-in payoff amount before advancing"
-- Click **Send Back** → deal returns to **Desking** with your note visible to the consultant
-
-### Step 3 — Explore Existing Deals
-1. From **Deals** list, browse the 13 seeded deals
-2. Click **Deal #1001** (James Kowalski, Funded Oct 2025) → opens the full jacket
-3. See the complete history: Created → Desking → F&I → Contracts Signed → Delivered → Funded
-
----
-
-## Workflow 5 — F&I Processing
+## Role 1 — F&I Manager
 
 **Login as:** `fni@autodesk-dms.com`
 
-> **Scenario:** The deal approved by the Sales Manager arrives in your queue.
+> The F&I (Finance & Insurance) Manager is the most feature-rich role in the system. After a Sales Manager approves a deal, it lands here. The F&I Manager secures financing, sells protection products, and ensures compliance before contracts are signed.
 
-### Step 1 — Review the Deal Jacket
-1. Click **Deals** — you'll see all deals (F&I Manager has read access to everything)
-2. Find the deal in **F&I** status → click to open the Deal Jacket
-3. Review: customer info, vehicle, full financial breakdown, trade-in detail, fee itemization
+**Use Deal #1011** for this walkthrough — Stephanie Harrington, 2023 BMW 5 Series 530i xDrive CPO, currently in **F&I** status.
 
-### Step 2 — Generate Documents
-1. Scroll to the **Documents** section
-2. Select **Buyer's Order** from the dropdown → click **Generate**
-   - The system renders an HTML template with all deal data → converts to PDF → stores it
+---
+
+### Feature 1 — Credit Application
+
+**What it does:** Collects the customer's financial profile so it can be submitted to lenders. Sensitive data (SSN, date of birth) is stored encrypted and never shown in plaintext after the first save.
+
+1. Click **Deals** in the left sidebar → find **Deal #1011** (Stephanie Harrington) → click to open the deal jacket
+2. Fill in the form:
+   - Annual Income: `125000`
+   - Employer: `Harrington Architecture LLC`
+   - Employment Length: `84` months
+   - Housing Type: `Own`
+   - Monthly Housing Payment: `2850`
+   - Date of Birth: `1978-04-12`
+   - SSN: enter any 9 digits (e.g. `123456789`)
+3. Click **Save Draft**
+   - Notice: the SSN field immediately replaces with `XXX-XX-6789` — the raw digits are gone permanently from the UI
+   - The status badge reads **Draft**
+4. Click **Submit Application** — status changes to **Submitted**
+
+> **Security highlight:** The SSN is encrypted at rest with AES-256-GCM. No API endpoint ever returns the plaintext SSN — only the masked version.
+
+---
+
+### Feature 2 — Lender Submission & Decision Comparison
+
+**What it does:** Sends the credit application to multiple lenders simultaneously (simulated here). Returns a side-by-side comparison of each lender's decision, buy rate, approved amount, and term.
+
+1. Still on Deal #1011 → click the **Lender Submission** tab
+2. In the **Submit to Lenders** panel, check:
+   - ☑ Ally Financial _(cap: 2.00%)_
+   - ☑ Chase Auto _(cap: 1.75%)_
+3. Click **Submit to 2 Lenders**
+4. The **Lender Decisions** table populates with both responses:
+   - **Approved** rows show buy rate, approved amount, max term
+   - **Conditional** rows list stipulations required before funding
+   - **Declined** rows have no rate or amount
+
+> **Demo note:** The lender simulator is deterministic — the same deal always returns the same decisions, making demos reproducible.
+
+---
+
+### Feature 3 — Rate Markup & Sell Rate
+
+**What it does:** The dealership earns additional income by marking up the buy rate from the lender. The sell rate (what the customer pays) equals buy rate + markup. The monthly payment recalculates instantly.
+
+1. Click **Select** on the Ally Financial Approved row
+2. Enter Rate Markup: `1.50`
+3. Watch the sell rate preview update: **buy rate + 1.50% = sell rate**
+4. If you enter more than 2.00% (Ally's cap), a warning banner appears — but the save is not blocked
+5. Click **Confirm Selection**
+6. The deal's APR and monthly payment in the jacket header update to the sell rate
+
+---
+
+### Feature 4 — F&I Product Menu
+
+**What it does:** Lets the F&I Manager add protection products to the deal (extended warranty, GAP, tire & wheel, etc.). The system tracks the gross on each product (selling price − cost) and keeps the deal's back-end gross in sync — in under 1 second.
+
+1. Click the **F&I Products** tab
+2. Click **+ Add Product**:
+   - Type: **VSC** | Provider: `Safe-Guard Products` | Cost: `850` | Selling Price: `1595` | Term: `48` months | Deductible: `100`
+   - Click **Add** — Total F&I Gross shows **$745.00** immediately
+3. Add a second product:
+   - Type: **GAP** | Provider: `Safe-Guard Products` | Cost: `195` | Selling Price: `695` | Term: `60` months
+   - Click **Add** — Total F&I Gross updates to **$1,245.00** within 1 second
+4. The **Back-End Gross** in the deal jacket header reflects $1,245.00
+
+> **Try editing:** Click the edit icon on a product → change the selling price → gross recalculates live.
+
+> **Try removing:** Click **Remove** on a product → confirm → gross drops immediately.
+
+---
+
+### Feature 5 — Disclosures & Compliance
+
+**What it does:** Ensures the F&I Manager has presented all required legal disclosures to the customer. Each confirmation is permanently recorded with the confirming user's name, role, and timestamp — it cannot be deleted.
+
+1. Click the **Disclosures** tab
+2. Three requirements appear for jurisdiction `US-DEFAULT`:
+   - Finance Charge & APR Disclosure
+   - F&I Product Voluntary Nature Disclosure
+   - Right of Rescission Notice
+3. Click the checkbox on each one to confirm it was presented
+4. After all three: the indicator turns **green** — **"3 of 3 disclosures confirmed"**
+5. Each row now shows: your name, role, and the exact date/time
+
+> **Role restriction demo:** Log in as Sales Manager and open the same deal's Disclosures tab — the checkboxes are disabled (read-only access only).
+
+---
+
+### Feature 6 — Document Generation & Pipeline Advance
+
+**What it does:** Generates PDF documents from deal data and advances the deal to the next pipeline stage.
+
+1. Click the **Documents** tab
+2. Select **Buyer's Order** → click **Generate**
+   - The system merges all deal data into an HTML template, converts it to PDF, and stores it
 3. Generate a **Bill of Sale** as well
-4. Both documents appear in the table with timestamps
-5. Click **Download** on either document — opens the PDF in a new tab
-
-### Step 3 — Advance the Deal
-1. In the **Pipeline Actions** panel:
-   - Click **Advance to Contracts Signed**
-2. The status badge updates to **Contracts Signed**
-3. The timeline on the right adds a new history entry with your name and timestamp
+4. Click **Download** on either — the PDF opens in a new tab
+5. Click **Advance to Contracts Signed** — the deal status updates and the timeline records your name and timestamp
 
 ---
 
-## Workflow 6 — Full Pipeline Completion
+## Role 2 — Sales Manager
 
-**Login as:** `sales1@autodesk-dms.com`
+**Login as:** `manager@autodesk-dms.com`
 
-### Step 1 — Mark as Delivered
-1. Open the deal (now in **Contracts Signed**)
-2. Click **Mark as Delivered**
-3. Status updates to **Delivered**
-
-### Step 2 — Mark as Funded
-1. Click **Mark as Funded**
-2. Status updates to **Funded** — this is a terminal state (no further changes)
-3. The deal's `fundedAt` timestamp is recorded
-4. It now appears in the Sales Report
+> The Sales Manager oversees all deals, approves desk structures, and views sales performance. They are the gatekeeper between the sales floor and the F&I office.
 
 ---
 
-## Workflow 7 — Sales Report
+### Feature 1 — Approval Queue
 
-**Login as:** `manager@autodesk-dms.com` or `gm@dms.local`
+**What it does:** Consolidates all deals waiting for management review in one place. The manager can approve with one click or push the deal back with a required note.
 
-### Step 1 — Run the Report
-1. Click **Sales Report** in the left nav
-2. Set date range: **Start Date** `2025-10-01` → **End Date** `2026-03-09`
-3. Click **Run Report**
+1. Click **Approval Queue** in the left sidebar
+2. All deals in **Desking** status appear here
+3. Click a deal to review the full financial breakdown before deciding
 
-### Step 2 — Review Results
-The report shows (based on the 6+ funded deals in the seed):
+**Option A — Approve:**
+- Click **Approve** → deal immediately moves to **F&I** status
 
-- **Total Units:** 6+ funded deals
-- **Total Front-End Gross:** Sum of all front-end gross across funded deals
-- **Avg Front-End Gross / Unit**
-- **Per-Salesperson Breakdown:** Jake Mitchell vs Emily Chen vs Chris Parker — units, totals, averages
-
-### Step 3 — Export CSV
-1. Click **Export CSV**
-2. A `sales-report.csv` file downloads automatically
-3. Open in Excel — all columns match what you see on screen
+**Option B — Send Back:**
+- Click **Send Back** → a dialog requires you to enter a reason
+- Type: `Need to verify trade-in payoff amount`
+- Click **Send Back** → the deal returns to Desking with your note visible to the consultant
 
 ---
 
-## Workflow 8 — Deal Jacket History View
+### Feature 2 — Full Deal History
 
-**Login as:** any role
+**What it does:** Every status change on every deal is permanently recorded — who did it, when, and why. This creates a complete audit trail from creation through funding.
 
-### View a Fully Completed Deal
-1. Go to **Deals** → find **Deal #1001** (James Kowalski, Toyota Camry XSE V6)
-2. Open the **Deal Jacket**
-3. On the right side, the **Status History Timeline** shows all 6 transitions:
+1. Click **Deals** in the left sidebar → find **Deal #1001** (James Kowalski, 2024 Toyota Camry XSE V6)
+2. Open the deal jacket → look at the **Status History Timeline** on the right:
 
 | Transition | Actor | Date |
 |---|---|---|
@@ -230,38 +191,243 @@ The report shows (based on the 6+ funded deals in the seed):
 | Contracts Signed → Delivered | Jake Mitchell (Sales Consultant) | Oct 14, 2025 |
 | Delivered → Funded | Diana Reeves (F&I Manager) | Oct 21, 2025 |
 
-### View the Unwound Deal
-1. Find **Deal #1007** (Robert Kim, Hyundai Sonata SE) — status **Unwound**
-2. The jacket shows the Unwound note: "Customer backed out — could not secure financing"
-3. The vehicle is back to **Frontline Ready** status in inventory
+> **Immutability highlight:** No entry in this timeline can ever be edited or deleted. This is enforced at the API level, not just the UI.
 
 ---
 
-## Key Features to Highlight
+### Feature 3 — Sales Report
 
-| Feature | Where to show it |
+**What it does:** Aggregates funded deal revenue by period with a per-salesperson breakdown. Exports to CSV for use in Excel.
+
+1. Click **Sales Report** in the left sidebar
+2. Set date range: `2025-10-01` → `2026-03-09`
+3. Click **Run Report**
+4. The report shows: total units, total front-end gross, average per unit, and a per-salesperson breakdown (Jake Mitchell, Emily Chen, Chris Parker)
+5. Click **Export CSV** → a `sales-report.csv` downloads automatically
+
+---
+
+## Role 3 — Sales Consultant
+
+**Login as:** `sales1@autodesk-dms.com`
+
+> Sales Consultants create deals, structure the financing on the desk, add fees and trade-ins, and carry the deal through delivery and funding. They interact with the customer directly throughout the process.
+
+---
+
+### Feature 1 — Creating a Deal
+
+**What it does:** Links a customer, a vehicle, and a deal type to open the deal file. The system prevents the same vehicle from being committed to two deals at once.
+
+1. Click **Deals** in the left sidebar → **+ New Deal**
+2. **Customer:** Type `Kowalski` and select **James Kowalski** from the dropdown
+3. **Vehicle:** Type `Tucson` → select **2024 Hyundai Tucson SEL AWD** (Stock #2014, Frontline Ready)
+4. **Deal Type:** Finance
+5. Click **Create Deal**
+
+> **Conflict guard demo:** Try assigning a vehicle that's already on an active deal (e.g. search `BMW 5 Series` — it's on Deal #1011) — the system returns a `409 Conflict` error.
+
+---
+
+### Feature 2 — Desking (Payment Structure)
+
+**What it does:** The deal structure screen where all financial terms are entered and the monthly payment is calculated using the standard amortization formula. Every field recalculates instantly.
+
+On the Desking page, enter:
+
+| Field | Value |
 |---|---|
-| **Live recalculation** | Desking page — change any number, watch monthly payment update |
-| **Optimistic concurrency** | Open deal in two tabs, edit both — second save shows a conflict error |
-| **Role-based access** | Log in as F&I Manager and try to create a deal → 403 Forbidden |
-| **Immutable audit trail** | Deal Jacket timeline — every transition is permanently recorded |
-| **7-year retention** | No delete buttons exist on deals or documents anywhere in the UI |
-| **Vehicle commitment guard** | Try to assign the same vehicle to two deals → 409 Conflict |
-| **Trade-in negative equity** | Set payoff > allowance — negative net trade increases amount financed |
-| **CSV export** | Sales Report → Export CSV → opens in Excel with all the right columns |
+| Sale Price | `34500` |
+| Down Payment | `4000` |
+| Rebates | `500` |
+| APR | `6.49` |
+| Term | `60` |
+| Tax Rate | `8.00` |
+
+Click **Recalculate** — the panel shows:
+- **Total Tax** (on sale price + taxable fees)
+- **Amount Financed**
+- **Monthly Payment** (M = P × [r(1+r)ⁿ] / [(1+r)ⁿ−1])
+- **Front-End Gross** (sale price − invoice)
+
+> **Live demo:** Change the APR from 6.49 to 7.99 and click Recalculate — watch the monthly payment and gross update.
 
 ---
 
-## Data Summary (As of Demo)
+### Feature 3 — Fees & Trade-In
+
+**What it does:** Fees are itemized and can be taxable or non-taxable. Trade-ins reduce the amount financed — negative equity (payoff > allowance) automatically increases the loan amount.
+
+**Add fees:**
+1. Click **+ Add Fee** → Documentary Fee: `$499` taxable ✓
+2. Click **+ Add Fee** → Title & License: `$250` non-taxable
+3. Watch the totals recalculate with each addition
+
+**Add a trade-in:**
+1. Click **+ Add Trade-In**
+2. Enter: 2020 Honda Civic, 42,000 miles, Good condition
+   - ACV: `14000` | Allowance: `15000` | Payoff: `8500`
+3. Net Trade = `$6,500` → amount financed decreases automatically
+
+> **Negative equity demo:** Set the payoff to `$20,000` (more than the $15,000 allowance) — net trade becomes −$5,000 and the amount financed increases instead.
+
+---
+
+### Feature 4 — Completing the Pipeline
+
+**What it does:** After F&I processing and contract signing, the consultant marks the deal as Delivered (customer takes the car) and then Funded (the lender releases money). Funded is a terminal state — no further changes allowed.
+
+1. Open a deal in **Contracts Signed** status
+2. Click **Mark as Delivered** → status updates to **Delivered**
+3. Click **Mark as Funded** → status updates to **Funded**
+   - The `fundedAt` timestamp is recorded and the deal appears in both the Sales Report and F&I Performance Report
+
+---
+
+## Role 4 — Controller
+
+**Login as:** `controller@autodesk-dms.com`
+
+> The Controller handles financial oversight: recording F&I chargebacks when customers cancel products, and running the F&I performance report to track net revenue across the dealership.
+
+---
+
+### Feature 1 — Chargeback Recording
+
+**What it does:** When a customer cancels an F&I product (e.g. cancels their extended warranty), the Controller records a chargeback — the amount the lender claws back from the dealership. The product status updates and the deal's back-end gross recalculates.
+
+**View an existing chargeback (seeded):**
+1. Click **Deals** in the left sidebar → open **Deal #1005** (Derek O'Brien, 2022 BMW 3 Series)
+2. Click the **F&I Products** tab — the VSC row shows status badge **Charged Back** (red) — recorded Jan 15, 2026
+
+**Record a new chargeback live:**
+1. Open **Deal #1006** (Raymond Flores, 2024 Toyota RAV4) → **F&I Products** tab
+2. Click **Chargeback** on the VSC row
+3. Enter: Amount `1200`, Date: today's date
+4. Click **Confirm Chargeback** in the confirmation step
+5. The badge changes to **Charged Back** and the back-end gross drops immediately
+
+---
+
+### Feature 2 — F&I Performance Report
+
+**What it does:** Aggregates F&I revenue and chargebacks across all funded deals for a given period. Uses two independent date axes — funded date for revenue, chargeback date for chargebacks — so a deal funded in December with a January chargeback shows correctly in both periods.
+
+**Run the full-year report:**
+1. Click **F&I Performance Report** in the left sidebar
+2. Set: From `2025-10-01` → To `2026-03-10`
+3. Click **Run Report**
+
+The summary row shows:
+- **Total Revenue** — sum of all F&I product selling prices
+- **Total Chargebacks** — $1,420 (the seeded VSC chargeback on Deal #1005)
+- **Net Revenue** — Total Revenue − $1,420
+- **PVR** (Per Vehicle Retail) — Net Revenue ÷ funded units
+- **Funded Units** — count of deals with F&I products in this period
+
+**Demonstrate the independent date axes:**
+1. Change the range to `2025-10-01` → `2025-12-31` and run
+   - Deal #1005 appears in **Funded Units** (funded Dec 30) but its **chargeback is $0** (chargebackDate is Jan 15)
+2. Change to `2026-01-01` → `2026-01-31` and run
+   - Deal #1005's **$1,420 chargeback now appears** — because the chargebackDate falls in January
+
+> This demonstrates that revenue and chargebacks are tracked on separate, correct date axes.
+
+**Export:**
+1. Click **⬇ Export CSV** → `fi-performance-[from]-[to].csv` downloads
+2. Open in Excel — all rows and columns match the on-screen table
+
+---
+
+## Role 5 — BDC Agent
+
+**Login as:** `bdc@autodesk-dms.com`
+
+> The Business Development Center (BDC) Agent manages incoming leads and customer relationships. They log every customer interaction and move leads through the sales pipeline before handing off to a consultant.
+
+---
+
+### Feature 1 — Lead Management
+
+**What it does:** Tracks every potential buyer through a pipeline of stages: New → Contacted → Appointment Set → Showed → Negotiating → Sold (or Lost). All activity is logged for accountability.
+
+1. Click **Leads** in the left sidebar — 14 leads in various stages
+2. Click the lead for **Rachel Simmons** (currently Negotiating)
+3. Log an activity: click **+ Activity** → type **Call** → content: `Called Rachel, confirmed interest in RAV4 CPO`
+4. Create a task: click **+ Task** → type: `Send pricing sheet for RAV4 CPO` → due tomorrow
+5. Advance the stage: change status from **Negotiating → Showed**
+
+---
+
+### Feature 2 — Customer Profiles
+
+**What it does:** Every customer has a unified profile showing all their leads, activities, tasks, and purchase history across all their visits to the dealership.
+
+1. Click **Customers** in the left sidebar
+2. Find **James Kowalski**
+3. His profile shows: Deal #1001 (Toyota Camry XSE V6, funded Oct 2025), all call/email activities, and linked leads
+
+---
+
+## Role 6 — Inventory Manager
+
+**Login as:** `inventory@dms.local`
+
+> The Inventory Manager controls the vehicle lot — adding new arrivals, tracking status (frontline, recon, transit, sold), and maintaining pricing.
+
+---
+
+### Feature 1 — Vehicle Inventory
+
+**What it does:** A real-time view of every vehicle on the lot, including status, pricing, VIN, stock number, and condition. Sold vehicles are linked to their deals.
+
+1. Click **Inventory** in the left sidebar — 20 vehicles shown
+2. Filter by status: **Frontline Ready**, **In Recon**, **In Transit**, **Sold**
+3. Click any vehicle to see: VIN, stock number, year/make/model, MSRP, invoice, condition, lot location
+
+**Add a new vehicle:**
+1. Click **+ Add Vehicle**
+2. Fill in: VIN, stock number, year/make/model, condition (New / Used / CPO), MSRP, invoice price, status
+3. Click Save — the vehicle appears immediately in the list
+
+**View sold vehicles:**
+1. Filter to **Sold** → each entry shows the date sold and the linked deal
+
+---
+
+## Key Things to Show in a Demo
+
+| What to highlight | Where |
+|---|---|
+| **SSN encryption** | Credit Application — type an SSN, save — the raw digits vanish immediately, never visible again |
+| **Live rate markup** | Lender Submission — type a markup, watch sell rate = buy rate + markup update in real time |
+| **Markup cap warning** | Westlake Financial (cap 2.50%) — enter 3.00% — warning appears but save still succeeds |
+| **F&I gross speed** | F&I Products — add a product — the gross total updates in under 1 second |
+| **Chargeback date axis** | Performance Report — Dec range shows deal revenue but not the Jan chargeback; Jan range shows the chargeback |
+| **Disclosure audit trail** | Disclosures — confirm all 3, each shows confirmer name + role + timestamp — cannot be deleted |
+| **Immutable deal timeline** | Deal Jacket — every status transition recorded permanently, no delete button anywhere |
+| **Negative equity** | Desking trade-in — set payoff > allowance — amount financed increases instead of decreasing |
+| **Vehicle conflict guard** | Try assigning an already-committed vehicle to a new deal → 409 Conflict |
+| **Role enforcement** | Log in as F&I Manager, try to create a deal → 403 Forbidden (API-level, not just UI) |
+| **Optimistic concurrency** | Open the same deal in two browser tabs, edit both, save the second → conflict error |
+| **CSV exports** | Both Sales Report and F&I Performance Report stream downloadable CSV files |
+
+---
+
+## The Deal Pipeline at a Glance
 
 ```
-Users:        8  (Inventory, 3x Sales Consultant, Sales Manager, F&I, GM, BDC)
-Vehicles:    20  (8 Sold, 8 Frontline, 2 In Recon, 2 In Transit)
-Customers:   15
-Leads:       14  (6 Sold, 2 Lost, 6 Active)
-Activities:  27  (Calls, Emails, Texts, Notes, Visits)
-Tasks:       16  (5 Completed, 11 Pending)
-Deals:       13  (6 Funded, 1 Unwound, 1 Delivered, 1 Contracts Signed,
-                   1 F&I, 1 Desking, 1 Pending)
-Deal Range:  #1001 (Oct 14 2025) → #1013 (Mar 9 2026)
+Customer walks in
+      ↓
+[Sales Consultant] Creates deal → desks payment → adds fees / trade-in
+      ↓
+[Sales Manager] Reviews → Approves (or sends back with note)
+      ↓
+[F&I Manager] Credit app → lender submission → select rate → add products → disclosures → generate docs
+      ↓
+[Sales Consultant] Marks Delivered
+      ↓
+[Sales Consultant or F&I] Marks Funded ← terminal state, appears in reports
+      ↓
+[Controller] Records chargebacks if products cancelled → views F&I Performance Report
 ```

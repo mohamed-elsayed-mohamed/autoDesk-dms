@@ -5,11 +5,16 @@ const apiClient = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-let accessToken: string | null = null;
+let accessToken: string | null = localStorage.getItem('accessToken');
 let onSessionExpired: (() => void) | null = null;
 
 export function setAccessToken(token: string | null) {
   accessToken = token;
+  if (token) {
+    localStorage.setItem('accessToken', token);
+  } else {
+    localStorage.removeItem('accessToken');
+  }
 }
 
 export function getAccessToken(): string | null {

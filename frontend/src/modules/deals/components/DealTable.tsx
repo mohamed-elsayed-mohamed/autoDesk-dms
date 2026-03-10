@@ -20,6 +20,7 @@ interface DealTableProps {
   page: number;
   pageSize: number;
   onPageChange: (page: number) => void;
+  onRowClick?: (deal: Deal) => void;
   loading?: boolean;
 }
 
@@ -35,6 +36,7 @@ export default function DealTable({
   page,
   pageSize,
   onPageChange,
+  onRowClick,
   loading = false,
 }: DealTableProps) {
   return (
@@ -74,7 +76,7 @@ export default function DealTable({
                   : '—';
 
                 return (
-                  <TableRow key={deal.id} hover sx={{ cursor: 'pointer' }}>
+                  <TableRow key={deal.id} hover sx={{ cursor: 'pointer' }} onClick={() => onRowClick?.(deal)}>
                     <TableCell sx={{ fontWeight: 600 }}>{deal.dealNumber}</TableCell>
                     <TableCell>{customerName}</TableCell>
                     <TableCell sx={{ whiteSpace: 'nowrap' }}>{vehicle}</TableCell>

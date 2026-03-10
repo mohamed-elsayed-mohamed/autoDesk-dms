@@ -4,12 +4,15 @@ import { Alert, Box, Button, Typography } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import { useDeals } from '../hooks/useDeals';
+import { useAuth } from '../../auth/AuthContext';
 import DealTable from '../components/DealTable';
 
 const PAGE_SIZE = 25;
 
 export default function DealListPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const canCreateDeal = user?.role === 'SalesConsultant';
   const [page, setPage] = useState(0);
   const { deals, total, loading, error, refetch } = useDeals({ page, pageSize: PAGE_SIZE });
 
@@ -17,13 +20,15 @@ export default function DealListPage() {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4">Deals</Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddCircleIcon />}
-          onClick={() => navigate('/deals/new')}
-        >
-          New Deal
-        </Button>
+        {canCreateDeal && (
+          <Button
+            variant="contained"
+            startIcon={<AddCircleIcon />}
+            onClick={() => navigate('/deals/new')}
+          >
+            New Deal
+          </Button>
+        )}
       </Box>
 
       {error && (
@@ -46,9 +51,11 @@ export default function DealListPage() {
           <Typography variant="h6" color="text.secondary" gutterBottom>
             No deals yet
           </Typography>
-          <Button variant="contained" onClick={() => navigate('/deals/new')}>
-            Create your first deal
-          </Button>
+          {canCreateDeal && (
+            <Button variant="contained" onClick={() => navigate('/deals/new')}>
+              Create your first deal
+            </Button>
+          )}
         </Box>
       ) : (
         <DealTable
@@ -57,6 +64,7 @@ export default function DealListPage() {
           page={page}
           pageSize={PAGE_SIZE}
           onPageChange={setPage}
+          onRowClick={(deal) => navigate(`/deals/${deal.id}/jacket`)}
           loading={loading}
         />
       )}

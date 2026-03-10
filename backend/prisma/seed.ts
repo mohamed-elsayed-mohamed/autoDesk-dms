@@ -13,6 +13,8 @@ import {
   DealType,
   DealStatus,
   TradeInCondition,
+  FiProductType,
+  FiProductStatus,
 } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 
@@ -70,6 +72,7 @@ async function main() {
     { id: 'seed-user-006', email: 'sales1@autodesk-dms.com',     firstName: 'Jake',   lastName: 'Mitchell', role: UserRole.SalesConsultant  },
     { id: 'seed-user-007', email: 'sales2@autodesk-dms.com',     firstName: 'Emily',  lastName: 'Chen',     role: UserRole.SalesConsultant  },
     { id: 'seed-user-008', email: 'fni@autodesk-dms.com',        firstName: 'Diana',  lastName: 'Reeves',   role: UserRole.FniManager       },
+    { id: 'seed-user-009', email: 'controller@autodesk-dms.com', firstName: 'Marcus', lastName: 'Webb',     role: UserRole.Controller       },
   ];
 
   for (const u of usersData) {
@@ -1016,6 +1019,154 @@ async function main() {
     createdById: s2.id, fundedAt: null, createdAt: d(2026, 3, 9, 10),
   });
 
+  // ─── F&I Reference Data ──────────────────────────────────────────────────────
+
+  // Lenders
+  const lendersData = [
+    { id: 'seed-lender-001', name: 'Ally Financial',         isActive: true, maxMarkupCap: 2.00 },
+    { id: 'seed-lender-002', name: 'Chase Auto',             isActive: true, maxMarkupCap: 1.75 },
+    { id: 'seed-lender-003', name: 'Capital One Auto',       isActive: true, maxMarkupCap: null },
+    { id: 'seed-lender-004', name: 'TD Auto Finance',        isActive: true, maxMarkupCap: null },
+    { id: 'seed-lender-005', name: 'Westlake Financial',     isActive: true, maxMarkupCap: 2.50 },
+  ];
+  for (const l of lendersData) {
+    await prisma.lender.upsert({
+      where: { id: l.id },
+      update: { name: l.name, isActive: l.isActive, maxMarkupCap: l.maxMarkupCap },
+      create: { id: l.id, name: l.name, isActive: l.isActive, maxMarkupCap: l.maxMarkupCap },
+    });
+  }
+
+  // Product Catalog
+  const catalogData = [
+    { id: 'seed-cat-001', productType: FiProductType.VSC,               providerName: 'Safe-Guard Products',  isActive: true },
+    { id: 'seed-cat-002', productType: FiProductType.VSC,               providerName: 'Zurich North America', isActive: true },
+    { id: 'seed-cat-003', productType: FiProductType.GAP,               providerName: 'Safe-Guard Products',  isActive: true },
+    { id: 'seed-cat-004', productType: FiProductType.GAP,               providerName: 'EFG Companies',        isActive: true },
+    { id: 'seed-cat-005', productType: FiProductType.TireWheel,        providerName: 'Tire & Wheel Guard',   isActive: true },
+    { id: 'seed-cat-006', productType: FiProductType.PaintProtection,  providerName: 'Paint Guard Pro',      isActive: true },
+    { id: 'seed-cat-007', productType: FiProductType.MaintenancePlan,  providerName: 'Jiffy Lube PrePaid',   isActive: true },
+    { id: 'seed-cat-008', productType: FiProductType.Other,            providerName: 'Key Replacement Plus', isActive: true },
+  ];
+  for (const c of catalogData) {
+    await prisma.productCatalogItem.upsert({
+      where: { id: c.id },
+      update: { productType: c.productType, providerName: c.providerName, isActive: c.isActive },
+      create: { id: c.id, productType: c.productType, providerName: c.providerName, isActive: c.isActive },
+    });
+  }
+
+  // Disclosure Requirements — US-DEFAULT jurisdiction
+  const disclosuresData = [
+    { id: 'seed-disc-001', jurisdiction: 'US-DEFAULT', disclosureName: 'Finance Charge & APR Disclosure',        isActive: true },
+    { id: 'seed-disc-002', jurisdiction: 'US-DEFAULT', disclosureName: 'F&I Product Voluntary Nature Disclosure', isActive: true },
+    { id: 'seed-disc-003', jurisdiction: 'US-DEFAULT', disclosureName: 'Right of Rescission Notice',             isActive: true },
+  ];
+  for (const dr of disclosuresData) {
+    await prisma.disclosureRequirement.upsert({
+      where: { id: dr.id },
+      update: { jurisdiction: dr.jurisdiction, disclosureName: dr.disclosureName, isActive: dr.isActive },
+      create: { id: dr.id, jurisdiction: dr.jurisdiction, disclosureName: dr.disclosureName, isActive: dr.isActive },
+    });
+  }
+
+  // F&I Products — on funded deals to populate the performance report
+  // Deal 1001 (seed-deal-001, fundedAt Oct 21 2025) — VSC + GAP
+  const fiProductsData = [
+    {
+      id: 'seed-fip-001', dealId: 'seed-deal-001',
+      productType: FiProductType.VSC, providerName: 'Safe-Guard Products',
+      cost: 850, sellingPrice: 1595, termMonths: 48, deductible: 100,
+      status: FiProductStatus.Active, contractNumber: 'SG-VSC-10011',
+    },
+    {
+      id: 'seed-fip-002', dealId: 'seed-deal-001',
+      productType: FiProductType.GAP, providerName: 'Safe-Guard Products',
+      cost: 195, sellingPrice: 695, termMonths: 60, deductible: null,
+      status: FiProductStatus.Active, contractNumber: 'SG-GAP-10012',
+    },
+    // Deal 1002 (seed-deal-002, fundedAt Nov 10 2025) — VSC + Tire & Wheel
+    {
+      id: 'seed-fip-003', dealId: 'seed-deal-002',
+      productType: FiProductType.VSC, providerName: 'Zurich North America',
+      cost: 900, sellingPrice: 1750, termMonths: 48, deductible: 200,
+      status: FiProductStatus.Active, contractNumber: 'ZN-VSC-10021',
+    },
+    {
+      id: 'seed-fip-004', dealId: 'seed-deal-002',
+      productType: FiProductType.TireWheel, providerName: 'Tire & Wheel Guard',
+      cost: 250, sellingPrice: 595, termMonths: 36, deductible: null,
+      status: FiProductStatus.Active, contractNumber: 'TW-001-10022',
+    },
+    // Deal 1004 (seed-deal-004, fundedAt Dec 16 2025) — GAP only
+    {
+      id: 'seed-fip-005', dealId: 'seed-deal-004',
+      productType: FiProductType.GAP, providerName: 'EFG Companies',
+      cost: 200, sellingPrice: 750, termMonths: 72, deductible: null,
+      status: FiProductStatus.Active, contractNumber: 'EFG-GAP-10041',
+    },
+    // Deal 1005 (seed-deal-005, fundedAt Dec 30 2025) — VSC (charged back in Jan 2026)
+    {
+      id: 'seed-fip-006', dealId: 'seed-deal-005',
+      productType: FiProductType.VSC, providerName: 'Zurich North America',
+      cost: 975, sellingPrice: 1895, termMonths: 60, deductible: 100,
+      status: FiProductStatus.ChargedBack, contractNumber: 'ZN-VSC-10051',
+      chargebackAmount: 1420, chargebackDate: new Date('2026-01-15'),
+    },
+    {
+      id: 'seed-fip-007', dealId: 'seed-deal-005',
+      productType: FiProductType.MaintenancePlan, providerName: 'Jiffy Lube PrePaid',
+      cost: 175, sellingPrice: 595, termMonths: 36, deductible: null,
+      status: FiProductStatus.Active, contractNumber: 'JL-MAINT-10052',
+    },
+    // Deal 1006 (seed-deal-006, fundedAt Feb 3 2026) — VSC + Paint Protection
+    {
+      id: 'seed-fip-008', dealId: 'seed-deal-006',
+      productType: FiProductType.VSC, providerName: 'Safe-Guard Products',
+      cost: 820, sellingPrice: 1595, termMonths: 48, deductible: 200,
+      status: FiProductStatus.Active, contractNumber: 'SG-VSC-10061',
+    },
+    {
+      id: 'seed-fip-009', dealId: 'seed-deal-006',
+      productType: FiProductType.PaintProtection, providerName: 'Paint Guard Pro',
+      cost: 295, sellingPrice: 795, termMonths: 60, deductible: null,
+      status: FiProductStatus.Active, contractNumber: 'PP-001-10062',
+    },
+  ];
+  for (const p of fiProductsData) {
+    await prisma.fIProduct.upsert({
+      where: { id: p.id },
+      update: {},
+      create: {
+        id: p.id,
+        dealId: p.dealId,
+        productType: p.productType,
+        providerName: p.providerName,
+        cost: p.cost,
+        sellingPrice: p.sellingPrice,
+        termMonths: p.termMonths,
+        deductible: p.deductible ?? null,
+        status: p.status,
+        contractNumber: p.contractNumber ?? null,
+        chargebackAmount: ('chargebackAmount' in p) ? p.chargebackAmount : null,
+        chargebackDate: ('chargebackDate' in p) ? p.chargebackDate : null,
+        chargebackRecordedById: ('chargebackAmount' in p) ? fni.id : null,
+      },
+    });
+  }
+
+  // Update backEndGross on funded deals that now have F&I products
+  const backEndGrossUpdates: Record<string, number> = {
+    'seed-deal-001': (1595 - 850) + (695 - 195),   // $745 + $500 = $1,245
+    'seed-deal-002': (1750 - 900) + (595 - 250),   // $850 + $345 = $1,195
+    'seed-deal-004': (750 - 200),                  // $550
+    'seed-deal-005': (595 - 175),                  // $420 (VSC charged back, only maintenance active)
+    'seed-deal-006': (1595 - 820) + (795 - 295),   // $775 + $500 = $1,275
+  };
+  for (const [dealId, gross] of Object.entries(backEndGrossUpdates)) {
+    await prisma.deal.update({ where: { id: dealId }, data: { backEndGross: gross } });
+  }
+
   // ── Mark sold vehicles with sale prices matching their deals ─────────────────
   // These are already set via vehicle upsert above (status=Sold, dateSold set)
   // Update salePrice to match deal salePrice for accuracy
@@ -1039,13 +1190,17 @@ async function main() {
 
   console.log(`
 Seed complete!
-  Users:          ${usersData.length}
+  Users:          ${usersData.length} (+ Controller: controller@autodesk-dms.com)
   Vehicles:       ${vehiclesData.length} (8 Sold, 8 FrontlineReady, 2 InRecon, 2 InTransit)
   Customers:      ${customersData.length}
   Leads:          14 (6 Sold, 2 Lost, 6 Active)
   Activities:     27
   Tasks:          16 (5 Completed, 11 Pending)
   Deals:          13 (6 Funded, 1 Unwound, 1 Delivered, 1 ContractsSigned, 1 Fni, 1 Desking, 1 Pending, 1 extra Funded)
+  F&I Lenders:    ${lendersData.length} (Ally, Chase, Capital One, TD Auto, Westlake)
+  Product Catalog: ${catalogData.length} items (VSC×2, GAP×2, T&W, Paint, Maintenance, Other)
+  Disclosures:    ${disclosuresData.length} requirements (US-DEFAULT jurisdiction)
+  F&I Products:   ${fiProductsData.length} on funded deals (performance report ready)
   DealershipConfig: dealNumberOffset=1001
   `);
 }

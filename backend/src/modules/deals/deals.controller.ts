@@ -7,8 +7,7 @@ import {
   Param,
   Query,
   UseGuards,
-  ParseUUIDPipe,
-  HttpCode,
+    HttpCode,
   HttpStatus,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -19,12 +18,27 @@ import { UserRole, DealStatus } from '@prisma/client';
 import { DealsService, RequestingUser } from './deals.service';
 import { CreateDealDto } from './dto/create-deal.dto';
 import { UpdateDealDto } from './dto/update-deal.dto';
+import { IsOptional, IsString, IsNumberString, IsEnum } from 'class-validator';
 
 class DealListQueryDto {
+  @IsOptional()
+  @IsEnum(DealStatus)
   status?: DealStatus;
+
+  @IsOptional()
+  @IsString()
   startDate?: string;
+
+  @IsOptional()
+  @IsString()
   endDate?: string;
+
+  @IsOptional()
+  @IsNumberString()
   page?: number;
+
+  @IsOptional()
+  @IsNumberString()
   pageSize?: number;
 }
 
@@ -52,14 +66,14 @@ export class DealsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+  async findOne(@Param('id') id: string) {
     return this.dealsService.findOneOrFail(id);
   }
 
   @Patch(':id')
   @Roles(UserRole.SalesConsultant)
   async update(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id') id: string,
     @Body() dto: UpdateDealDto,
     @CurrentUser() actor: RequestingUser,
   ) {

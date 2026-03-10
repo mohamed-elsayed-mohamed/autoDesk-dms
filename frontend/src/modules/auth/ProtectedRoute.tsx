@@ -16,11 +16,14 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
   }
 
   if (allowedRoles && user && !allowedRoles.includes(user.role)) {
-    if (user.role === 'SalesConsultant') {
-      return <Navigate to="/vehicles" replace />;
+    if (user.role === 'FniManager' || user.role === 'Controller') {
+      return <Navigate to="/deals" replace />;
     }
     if (user.role === 'GeneralManager') {
       return <Navigate to="/dashboard" replace />;
+    }
+    if (user.role === 'BDCAgent') {
+      return <Navigate to="/leads" replace />;
     }
     return <Navigate to="/vehicles" replace />;
   }

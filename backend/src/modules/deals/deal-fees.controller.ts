@@ -6,8 +6,7 @@ import {
   Body,
   Param,
   UseGuards,
-  ParseUUIDPipe,
-  HttpCode,
+    HttpCode,
   HttpStatus,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -26,17 +25,14 @@ export class DealFeesController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async addFee(
-    @Param('dealId', ParseUUIDPipe) dealId: string,
-    @Body() dto: CreateDealFeeDto,
-  ) {
+  async addFee(@Param('dealId') dealId: string, @Body() dto: CreateDealFeeDto) {
     return this.dealFeesService.addFee(dealId, dto);
   }
 
   @Patch(':feeId')
   async updateFee(
-    @Param('dealId', ParseUUIDPipe) dealId: string,
-    @Param('feeId', ParseUUIDPipe) feeId: string,
+    @Param('dealId') dealId: string,
+    @Param('feeId') feeId: string,
     @Body() dto: UpdateDealFeeDto,
   ) {
     return this.dealFeesService.updateFee(dealId, feeId, dto);
@@ -45,8 +41,8 @@ export class DealFeesController {
   @Delete(':feeId')
   @HttpCode(HttpStatus.NO_CONTENT)
   async removeFee(
-    @Param('dealId', ParseUUIDPipe) dealId: string,
-    @Param('feeId', ParseUUIDPipe) feeId: string,
+    @Param('dealId') dealId: string,
+    @Param('feeId') feeId: string,
   ) {
     return this.dealFeesService.removeFee(dealId, feeId);
   }

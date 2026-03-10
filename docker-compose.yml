@@ -34,6 +34,7 @@ services:
       JWT_SECRET: local-dev-secret-at-least-32-characters-long
       JWT_EXPIRES_IN: 1h
       UPLOAD_DIR: ./uploads
+      SSN_ENCRYPTION_KEY: 52abf439c350da35c6cd104bb1e4d05c62d93b195b45a532e997b4452e836f0b
     volumes:
       - ./backend:/app
       - /app/node_modules

@@ -2,14 +2,18 @@ import { Injectable, NotFoundException, UnprocessableEntityException } from '@ne
 import { PrismaService } from '../../common/prisma/prisma.service';
 import { validateStatusTransition } from './constants/deal-status-transitions.constants';
 import { TransitionStatusDto } from './dto/transition-status.dto';
-import { DealStatus, UserRole } from '@prisma/client';
+import { DealStatus } from '@prisma/client';
 import { RequestingUser } from './deals.service';
 
 @Injectable()
 export class DealStatusService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async transitionStatus(dealId: string, dto: TransitionStatusDto, actor: RequestingUser): Promise<void> {
+  async transitionStatus(
+    dealId: string,
+    dto: TransitionStatusDto,
+    actor: RequestingUser,
+  ): Promise<void> {
     const deal = await this.prisma.deal.findUnique({
       where: { id: dealId },
       select: { status: true, taxRate: true },

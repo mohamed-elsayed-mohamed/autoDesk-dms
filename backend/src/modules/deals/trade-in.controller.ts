@@ -6,8 +6,7 @@ import {
   Body,
   Param,
   UseGuards,
-  ParseUUIDPipe,
-  HttpCode,
+    HttpCode,
   HttpStatus,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -26,7 +25,7 @@ export class TradeInController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async upsertTradeIn(
-    @Param('dealId', ParseUUIDPipe) dealId: string,
+    @Param('dealId') dealId: string,
     @Body() dto: UpsertTradeInDto,
   ) {
     return this.tradeInService.upsertTradeIn(dealId, dto);
@@ -34,7 +33,7 @@ export class TradeInController {
 
   @Patch()
   async updateTradeIn(
-    @Param('dealId', ParseUUIDPipe) dealId: string,
+    @Param('dealId') dealId: string,
     @Body() dto: UpsertTradeInDto,
   ) {
     return this.tradeInService.updateTradeIn(dealId, dto);
@@ -42,7 +41,7 @@ export class TradeInController {
 
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
-  async removeTradeIn(@Param('dealId', ParseUUIDPipe) dealId: string) {
+  async removeTradeIn(@Param('dealId') dealId: string) {
     return this.tradeInService.removeTradeIn(dealId);
   }
 }

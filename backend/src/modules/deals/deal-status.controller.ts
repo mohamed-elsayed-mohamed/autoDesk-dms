@@ -1,4 +1,12 @@
-import { Controller, Post, Param, Body, UseGuards, ParseUUIDPipe, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Param,
+  Body,
+  UseGuards,
+    HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -14,7 +22,7 @@ export class DealStatusController {
   @Post()
   @HttpCode(HttpStatus.OK)
   async transitionStatus(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id') id: string,
     @Body() dto: TransitionStatusDto,
     @CurrentUser() actor: RequestingUser,
   ) {

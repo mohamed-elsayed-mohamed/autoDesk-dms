@@ -16,7 +16,10 @@ export class DealFeesService {
   ) {}
 
   private async guardEditAccess(dealId: string): Promise<void> {
-    const deal = await this.prisma.deal.findUnique({ where: { id: dealId }, select: { status: true } });
+    const deal = await this.prisma.deal.findUnique({
+      where: { id: dealId },
+      select: { status: true },
+    });
     if (!deal) throw new NotFoundException(`Deal ${dealId} not found.`);
     if (EDIT_LOCKED_STATUSES.includes(deal.status)) {
       throw new ForbiddenException(`Fee editing is locked when deal is in ${deal.status} status.`);
