@@ -26,8 +26,8 @@ export function useFiPerformanceReport() {
       );
       if (!res.ok) throw new Error(`Request failed: ${res.status}`);
       const json = await res.json();
-      setReport(json.data);
-      return json.data as FiPerformanceReport;
+      setReport(json);
+      return json as FiPerformanceReport;
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Failed to load report';
       setError(msg);

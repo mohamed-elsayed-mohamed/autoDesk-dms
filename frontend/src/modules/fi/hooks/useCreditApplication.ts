@@ -42,7 +42,7 @@ export function useCreditApplication(dealId: string) {
         return r.json();
       })
       .then((json) => {
-        if (!cancelled) setCreditApp(json?.data ?? null);
+        if (!cancelled) setCreditApp(json ?? null);
       })
       .catch((err) => {
         if (!cancelled) setError(err.message);
@@ -65,8 +65,8 @@ export function useCreditApplication(dealId: string) {
         throw new Error(err.message ?? `Request failed: ${res.status}`);
       }
       const json = await res.json();
-      setCreditApp(json.data);
-      return json.data as CreditApplication;
+      setCreditApp(json);
+      return json as CreditApplication;
     },
     [dealId],
   );
@@ -83,8 +83,8 @@ export function useCreditApplication(dealId: string) {
         throw new Error(err.message ?? `Request failed: ${res.status}`);
       }
       const json = await res.json();
-      setCreditApp(json.data);
-      return json.data as CreditApplication;
+      setCreditApp(json);
+      return json as CreditApplication;
     },
     [dealId],
   );
@@ -99,8 +99,8 @@ export function useCreditApplication(dealId: string) {
       throw new Error(err.message ?? `Request failed: ${res.status}`);
     }
     const json = await res.json();
-    setCreditApp(json.data);
-    return json.data as CreditApplication;
+    setCreditApp(json);
+    return json as CreditApplication;
   }, [dealId]);
 
   const supersede = useCallback(

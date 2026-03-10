@@ -27,7 +27,7 @@ export function useDisclosures(dealId: string) {
         if (!r.ok) throw new Error(`Request failed: ${r.status}`);
         return r.json();
       })
-      .then((json) => { if (!cancelled) setStatus(json.data); })
+      .then((json) => { if (!cancelled) setStatus(json); })
       .catch((err) => { if (!cancelled) setError(err.message); })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };

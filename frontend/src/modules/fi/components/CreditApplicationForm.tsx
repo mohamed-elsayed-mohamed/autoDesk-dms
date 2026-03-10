@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CreditApplication } from '../types/fi.types';
 import { CreditApplicationFormData } from '../hooks/useCreditApplication';
 
@@ -24,6 +24,22 @@ export function CreditApplicationForm({ existingApp, onSaveDraft, onSubmit, read
   const [showSupersedeModal, setShowSupersedeModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
+  // Sync form fields when existingApp changes (e.g. after first save)
+  useEffect(() => {
+    if (existingApp) {
+      setForm({
+        annualIncome: Number(existingApp.annualIncome),
+        employerName: existingApp.employerName ?? '',
+        employmentLengthMonths: existingApp.employmentLengthMonths ?? undefined,
+        housingType: (existingApp.housingType as 'Own' | 'Rent' | 'Other') ?? 'Rent',
+        monthlyHousingPayment: Number(existingApp.monthlyHousingPayment),
+        dateOfBirth: existingApp.dateOfBirth ? existingApp.dateOfBirth.slice(0, 10) : '',
+        ssn: '',
+      });
+    }
+  }, [existingApp?.id]);
 
   const handleChange = (field: keyof CreditApplicationFormData, value: string | number) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -32,6 +48,7 @@ export function CreditApplicationForm({ existingApp, onSaveDraft, onSubmit, read
   const handleSave = async (supersede = false) => {
     setSaving(true);
     setError(null);
+    setSuccessMsg(null);
     try {
       if (existingApp?.status === 'Submitted' && !supersede) {
         setShowSupersedeModal(true);
@@ -39,6 +56,7 @@ export function CreditApplicationForm({ existingApp, onSaveDraft, onSubmit, read
       }
       await onSaveDraft({ ...(form as CreditApplicationFormData), supersede });
       setShowSupersedeModal(false);
+      setSuccessMsg('Draft saved successfully.');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Save failed');
     } finally {
@@ -49,8 +67,10 @@ export function CreditApplicationForm({ existingApp, onSaveDraft, onSubmit, read
   const handleSubmit = async () => {
     setSaving(true);
     setError(null);
+    setSuccessMsg(null);
     try {
       await onSubmit();
+      setSuccessMsg('Application submitted successfully.');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Submit failed');
     } finally {
@@ -86,6 +106,12 @@ export function CreditApplicationForm({ existingApp, onSaveDraft, onSubmit, read
       {error && (
         <div style={{ marginBottom: 12, padding: 8, background: '#ffebee', borderRadius: 4, color: '#c62828' }}>
           {error}
+        </div>
+      )}
+
+      {successMsg && (
+        <div style={{ marginBottom: 12, padding: 8, background: '#e8f5e9', borderRadius: 4, color: '#2e7d32' }}>
+          {successMsg}
         </div>
       )}
 
